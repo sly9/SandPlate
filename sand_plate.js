@@ -29,6 +29,9 @@ class SandPlate {
     rotateArm1(steps=1,clockwise=true, drawDotAfterRotation = true) {
 
     }
+
     gotoPos = async (x, y) => {}
+    
+    gotoPos2 = async (x, y) => {}
 
 }

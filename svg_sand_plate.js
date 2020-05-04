@@ -25,7 +25,7 @@ class SvgSandPlate extends SandPlate {
 
         this.lastDrawnX0_ = 400;
         this.lastDrawnY0_ = 400;
-        this.rotateArm1(512, true, false);
+        //this.rotateArm1(512, true, false);
 
     }
 
@@ -177,5 +177,101 @@ class SvgSandPlate extends SandPlate {
 
     }
 
+    gotoPos2 = async (x, y) => {
+        let eps = 1.0e-8;
 
+        console.log("gotoPos2 " + x + " " + y);
+
+        let a0 = this.arm0Rotation_;
+        let a1 = this.arm1Rotation_;
+
+        // console.log("arg : " + a0 + "  " + a1);
+
+        // initial position
+        let x0 = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1) * Math.PI / 180);
+        let y0 = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1) * Math.PI / 180);
+        let r0 = x0 * x0 + y0 * y0;
+
+        let r = x * x + y * y;
+
+        // arm 1
+        let j = 0;
+
+        let j1 = j;
+        let mindist = Math.abs(r - r0);
+
+        let x1;
+        let y1;
+        let r1;
+        for (j = 0; j < 1024; ++j) {
+            x1 = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+            y1 = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+            r1 = x1 * x1 + y1 * y1;
+
+            if (Math.abs(r - r1) < mindist) {
+                mindist = Math.abs(r - r1);
+                j1 = j;
+            }
+
+            if (mindist < eps) { break; }
+        }
+
+        // console.log("j1 " + j1);
+        
+        a1 += j1 * SandPlate.DEGREES_PER_STEP;
+
+        // console.log("arg : " + a0 + "  " + a1);
+
+        // current position x1, y1
+        x1 = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1) * Math.PI / 180);
+        y1 = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1) * Math.PI / 180);
+
+        // console.log("x1 y1 " + x1 + " " + y1);
+
+        // arm 0
+        j = 0;
+
+        let j0 = j;
+        mindist = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
+    
+        // console.log("dist " + mindist);
+
+        for (j = 0; j < 1024; ++j) {
+            x1 = 200 * Math.cos((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180) + 200 * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+            y1 = 200 * Math.sin((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180) + 200 * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+
+            let dist = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
+
+            // console.log("dist " + j + "  " + x1 + "  " + y1 + "  " +  dist);
+            if (dist < mindist) {
+                mindist = dist;
+                j0 = j;
+            }
+
+            if (mindist < eps) { break; }
+        }
+
+        // console.log("j0 " + j0);
+
+        a0 += j0 * SandPlate.DEGREES_PER_STEP;
+        a1 += j0 * SandPlate.DEGREES_PER_STEP;
+
+        // console.log("arg : " + a0 + "  " + a1);
+
+        let act0;
+        if (j0 < 512) {
+            act0 = this.rotateArm0(j0, true, false);
+        } else {
+            act0 = this.rotateArm0(1024 - j0, false, false);
+        }
+
+        let act1;
+        if (j1 <= 512) {
+            act1 = this.rotateArm1(j1, true, false);
+        } else {
+            act1 = this.rotateArm1(1024 - j1, false, false);
+        }
+
+        await Promise.all([act0, act1]);
+    }
 }

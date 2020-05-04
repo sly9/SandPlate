@@ -70,22 +70,36 @@ let drawNestedSpiral = async () => {
 
 let drawSquare = async () => {
     console.log('Draw a square');
-    await sandPlate.gotoPos(200,200);
+
     while (true) {
-        for (let i = 0 ; i < 100 ; i++) {
-            await sandPlate.gotoPos(200, 200 - i * 4);
+        for (let i = 0; i < 100; ++i) {
+            await sandPlate.gotoPos2(400 - i * 4, i * 4);
         }
-        for (let i = 0 ; i < 100 ; i++) {
-            await sandPlate.gotoPos( 200 - i * 4,-200);
+        for (let i = 0; i < 100; ++i) {
+            await sandPlate.gotoPos2(- i * 4, 400 - i * 4);
         }
-        for (let i = 0 ; i < 100 ; i++) {
-            await sandPlate.gotoPos(-200, -200 + i * 4);
+        for (let i = 0; i < 100; ++i) {
+            await sandPlate.gotoPos2(-400 + i * 4, - i * 4);
         }
-        for (let i = 0 ; i < 100 ; i++) {
-            await sandPlate.gotoPos(-200+i*4, 200);
+        for (let i = 0; i < 100; ++i) {
+            await sandPlate.gotoPos2(i * 4, -400 + i * 4);
         }
     }
 
+    // while (true) {
+    //     for (let i = 0; i < 100; ++i) {
+    //         await sandPlate.gotoPos(400 - i * 4, i * 4);
+    //     }
+    //     for (let i = 0; i < 100; ++i) {
+    //         await sandPlate.gotoPos(- i * 4, 400 - i * 4);
+    //     }
+    //     for (let i = 0; i < 100; ++i) {
+    //         await sandPlate.gotoPos(-400 + i * 4, - i * 4);
+    //     }
+    //     for (let i = 0; i < 100; ++i) {
+    //         await sandPlate.gotoPos(i * 4, -400 + i * 4);
+    //     }
+    // }
 };
 
 
