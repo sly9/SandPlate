@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sand Sara</title>
+    <style>
+        #canvas {
+            border: 4px dotted darkgray;
+            margin: 10px;
+            width: 800px;
+            height: 800px;
+        }
+        #svg {
+            border: 4px dotted darkgray;
+            margin: 10px;
+            width: 800px;
+            height: 800px;
+            position: absolute;
+        }    </style>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="sand_plate.js"></script>
+    <script type="text/javascript" src="svg_sand_plate.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+</head>
+<body>
+<svg id="svg"></svg>
+<canvas id="canvas" height="800" width="800"></canvas>
+<button id="draw1">Draw Spiral</button>
+<button id="draw2">Draw Gear</button>
+<button id="draw3">Draw Nested Spiral</button>
+<button id="draw4">Draw Square</button>
+</body>
+</html>
