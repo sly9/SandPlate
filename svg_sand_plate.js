@@ -155,23 +155,23 @@ class SvgSandPlate extends SandPlate {
         let arm0DegreeDelta = (Math.abs(r0 - this.arm0Rotation_) % 360);
         let arm1DegreeDelta = (Math.abs(r1 - this.arm1Rotation_) % 360);
 
-        let promise0 = null;
-        if (arm0DegreeDelta > 180) {
-            promise0 = this.rotateArm0((360-arm0DegreeDelta ) / SandPlate.DEGREES_PER_STEP, r0 < this.arm0Rotation_, false);
-        } else {
-            promise0 = this.rotateArm0(arm0DegreeDelta / SandPlate.DEGREES_PER_STEP, r0 > this.arm0Rotation_, false);
-        }
+        // let promise0 = null;
+        // if (arm0DegreeDelta > 180) {
+        //     promise0 = this.rotateArm0((360-arm0DegreeDelta ) / SandPlate.DEGREES_PER_STEP, r0 < this.arm0Rotation_, false);
+        // } else {
+        //     promise0 = this.rotateArm0(arm0DegreeDelta / SandPlate.DEGREES_PER_STEP, r0 > this.arm0Rotation_, false);
+        // }
 
-        let promise1 = null;
-        if (arm1DegreeDelta > 180) {
-            promise1 = this.rotateArm1((360-arm1DegreeDelta ) / SandPlate.DEGREES_PER_STEP, r1 < this.arm1Rotation_);
-        } else {
-            promise1 = this.rotateArm1(arm1DegreeDelta / SandPlate.DEGREES_PER_STEP, r1 > this.arm1Rotation_);
-        }
+        // let promise1 = null;
+        // if (arm1DegreeDelta > 180) {
+        //     promise1 = this.rotateArm1((360-arm1DegreeDelta ) / SandPlate.DEGREES_PER_STEP, r1 < this.arm1Rotation_);
+        // } else {
+        //     promise1 = this.rotateArm1(arm1DegreeDelta / SandPlate.DEGREES_PER_STEP, r1 > this.arm1Rotation_);
+        // }
 
 
-        //let promise0 = this.rotateArm0(arm0DegreeDelta / SandPlate.DEGREES_PER_STEP, r0 > this.arm0Rotation_, false);
-        //let promise1 = this.rotateArm1(arm1DegreeDelta/ SandPlate.DEGREES_PER_STEP, r1 > this.arm1Rotation_);
+        let promise0 = this.rotateArm0(arm0DegreeDelta / SandPlate.DEGREES_PER_STEP, r0 > this.arm0Rotation_, false);
+        let promise1 = this.rotateArm1(arm1DegreeDelta/ SandPlate.DEGREES_PER_STEP, r1 > this.arm1Rotation_);
 
         await Promise.all([promise0, promise1]);
 
