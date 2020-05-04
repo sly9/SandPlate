@@ -177,6 +177,16 @@ class SvgSandPlate extends SandPlate {
 
     }
 
+    drawBigDot = (x, y) => {
+    	console.log('draw big dot at' +x+', '+y)
+    	let context = this.canvas_.getContext('2d');
+        context.beginPath();
+		context.strokeStyle = "#FF0000";
+		context.arc(x + 400, y + 400, 5, 0, 2 * Math.PI, true);
+		context.stroke();
+		context.strokeStyle = "#000000";
+    }
+
     gotoPos2 = async (x, y) => {
         let eps = 1.0e-8;
 
@@ -273,5 +283,6 @@ class SvgSandPlate extends SandPlate {
         }
 
         await Promise.all([act0, act1]);
+        this.drawBigDot(x,y)
     }
 }
