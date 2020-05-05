@@ -105,7 +105,7 @@ class SvgSandPlate extends SandPlate {
      * @param drawDotAfterRotation
      * @returns {Promise<void>}
      */
-    rotateArm0 = async (steps = 1, clockwise = true, drawDotAfterRotation = true) => {
+    rotateArm0 = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
         if (steps < 0) {
             console.warn('Why on earth would you move negative steps? Change your direction!');
         }
@@ -113,10 +113,13 @@ class SvgSandPlate extends SandPlate {
         while (true) {
             if (steps < 3) {
                 await this.rotateArm0_(steps, clockwise, true);
-                return;
+                break;
             }
             steps = steps - 3;
             await this.rotateArm0_(3, clockwise, true);
+        }
+        if (extraSleepTime > 0) {
+            await this.sleep_(extraSleepTime);
         }
     }
 
@@ -136,7 +139,7 @@ class SvgSandPlate extends SandPlate {
     }
 
 
-    rotateArm1 = async (steps = 1, clockwise = true, drawDotAfterRotation = true) => {
+    rotateArm1 = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
         if (steps < 0) {
             console.warn('Why on earth would you move negative steps? Change your direction!');
         }
@@ -144,10 +147,13 @@ class SvgSandPlate extends SandPlate {
         while (true) {
             if (steps < 3) {
                 await this.rotateArm1_(steps, clockwise, true);
-                return;
+                break;
             }
             steps = steps - 3;
             await this.rotateArm1_(3, clockwise, true);
+        }
+        if (extraSleepTime > 0) {
+            await this.sleep_(extraSleepTime);
         }
     }
 

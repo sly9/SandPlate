@@ -71,8 +71,9 @@ class SandPlate {
      * @param steps How many steps
      * @param {boolean} clockwise Whether this steps should be moving
      * @param {boolean} drawDotAfterRotation Whether a dot should be drawn after move. Noop for real sand plate.
+     * @param {number} Extra time in milliseconds to sleep, after rotation, before reporting complete.
      */
-    rotateArm0 = async (steps = 1, clockwise = true, drawDotAfterRotation = true) => {
+    rotateArm0 = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
         if (steps < 0) {
             console.warn('Why on earth would you move negative steps? Change your direction!');
         }
@@ -83,8 +84,9 @@ class SandPlate {
      * @param steps How many steps
      * @param {boolean} clockwise Whether this steps should be moving
      * @param {boolean} drawDotAfterRotation Whether a dot should be drawn after move. Noop for real sand plate.
+     * @param {number} Extra time in milliseconds to sleep, after rotation, before reporting complete.
      */
-    rotateArm1 = async (steps = 1, clockwise = true, drawDotAfterRotation = true) => {
+    rotateArm1 = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
         if (steps < 0) {
             console.warn('Why on earth would you move negative steps? Change your direction!');
         }
@@ -100,7 +102,14 @@ class SandPlate {
      * @returns {Promise<void>}
      */
     rotateBothArms = async (arm0Steps = 1, arm0Clockwise = true, arm1Steps = 1, arm1Clockwise = true, drawDotAfterRotation = true) => {
+        let rotateLargerSteps = arm0Steps > arm1Steps ? this.rotateArm0 : this.rotateArm1;
+        let rotateSmallerSteps = arm0Steps > arm1Steps ? this.rotateArm1 : this.rotateArm0;
+        let largerSteps = arm0Steps > arm1Steps ? arm0Steps : arm1Steps;
+        let smallerSteps = arm0Steps > arm1Steps ? arm1Steps : arm0Steps;
+        let largerClockwise = arm0Steps > arm1Steps ? arm0Clockwise : arm1Clockwise;
+        let smallerClockwise = arm0Steps > arm1Steps ? arm1Clockwise : arm0Clockwise;
 
+        // smallest steps to move in one trunk: 3 (random value, change later?)
     }
 
     // Draw a dot, noop for SVG
