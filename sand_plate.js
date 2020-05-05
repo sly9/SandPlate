@@ -149,8 +149,12 @@ class SandPlate {
         let r = this.armLength;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
 
-        if (r0 > this.radius_) {
-            console.warn('Out of range.');
+        if (r0 > this.radius) {
+            console.warn(`{${x0}, ${y0}} is out of range!`);
+            x0 = x0 * this.radius / r0;
+            y0 = y0 * this.radius / r0;
+            r0 = this.radius;
+            console.warn(`Going to nearest possible {${x0.toFixed(2)}, ${y0.toFixed(2)}} instead!`);
         }
 
         /**
@@ -188,13 +192,13 @@ class SandPlate {
 
             return;
         } else if (x0 == 0) {
-            y1 = Math.pow(r0, 2) / 2 / y0;
+            y1 = r0 * r0 / 2 / y0;
             y2 = y1;
 
             x1 = Math.sqrt(Math.pow(r, 2) - Math.pow(y1, 2));
             x2 = -1 * Math.sqrt(Math.pow(r, 2) - Math.pow(y2, 2));
         } else if (y0 == 0) {
-            x1 = Math.pow(r0, 2) / 2 / x0;
+            x1 = r0 * r0 / 2 / x0;
             x2 = x1;
 
             y1 = Math.sqrt(Math.pow(r, 2) - Math.pow(x1, 2));
@@ -238,15 +242,11 @@ class SandPlate {
          */
         let alpha = this.trig2Angle(xt / r, yt / r);
         let delta = alpha - a0;
-        while (delta < 0) {
-            delta += 360;
-        }
+        delta = (delta % 360 + 360) % 360
 
         let j0 = Math.floor(delta / SandPlate.DEGREES_PER_STEP);
         a0 += j0 * SandPlate.DEGREES_PER_STEP;
-        while (a0 >= 360) {
-            a0 -= 360;
-        }
+        a0 = (a0 % 360 + 360) % 360
 
         xt = r * Math.cos(a0 * Math.PI / 180);
         yt = r * Math.sin(a0 * Math.PI / 180);
@@ -261,9 +261,7 @@ class SandPlate {
         let rt = Math.sqrt((x0 - xt) * (x0 - xt) + (y0 - yt) * (y0 - yt));
         let beta = this.trig2Angle((x0 - xt) / rt, (y0 - yt) / rt);
         delta = beta - a0 - a1;
-        while (delta < 0) {
-            delta += 360;
-        }
+        delta = (delta % 360 + 360) % 360
 
         let j1 = Math.floor(delta / SandPlate.DEGREES_PER_STEP);
 

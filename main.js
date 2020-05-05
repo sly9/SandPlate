@@ -15,7 +15,7 @@ let init = () => {
     document.getElementById('draw4').addEventListener('click', drawSquare);
     document.getElementById('drawCross').addEventListener('click', drawCross);
     document.getElementById('draw5').addEventListener('click', sanityTest);
-
+    window.sandPlate = sandPlate;
 };
 
 const CANVAS_WIDTH = 800;
