@@ -270,14 +270,14 @@ class SandPlate {
         // console.log("arg : " + a0 + "  " + a1);
 
         let act0;
-        if (j0 <= 512) {
+        if (j0 <= SandPlate.STEPS_PER_ROUND / 2) {
             act0 = this.rotateArm0(j0, true);
         } else {
             act0 = this.rotateArm0(SandPlate.STEPS_PER_ROUND - j0, false);
         }
 
         let act1;
-        if (j1 <= 512) {
+        if (j1 <= SandPlate.STEPS_PER_ROUND / 2) {
             act1 = this.rotateArm1(j1, true);
         } else {
             act1 = this.rotateArm1(SandPlate.STEPS_PER_ROUND - j1, false);
@@ -377,7 +377,7 @@ class SandPlate {
 
         a0 += j0 * SandPlate.DEGREES_PER_STEP;
 
-        if (j0 <= 512) {
+        if (j0 <= SandPlate.STEPS_PER_ROUND / 2) {
             act0 = this.rotateArm0(j0);
         } else {
             act0 = this.rotateArm0(SandPlate.STEPS_PER_ROUND - j0, false);
@@ -399,7 +399,7 @@ class SandPlate {
 
         a1 += j1 * SandPlate.DEGREES_PER_STEP;
 
-        if (j1 <= 512) {
+        if (j1 <= SandPlate.STEPS_PER_ROUND / 2) {
             act1 = this.rotateArm1(j1);
         } else {
             act1 = this.rotateArm1(SandPlate.STEPS_PER_ROUND - j1, false);
