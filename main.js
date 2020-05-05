@@ -135,10 +135,10 @@ let drawStrange = async() => {
     console.log('draw strange graph... terrible name...');
 
     for (let i = 0; i < 10 ;i++) {
-        await sandPlate.gotoPos(400 - 40 * i, 0);
-        await sandPlate.gotoPos(400 - 40 * i, 40 * i+1);
-        await sandPlate.gotoPos(400 - 40 * i - 20, 40 * i+1);
-        await sandPlate.gotoPos(400 - 40 * i - 20, 0);
+        await sandPlate.lineTo(400 - 40 * i, 0);
+        await sandPlate.lineTo(400 - 40 * i, 40 * i+1);
+        await sandPlate.lineTo(400 - 40 * i - 20, 40 * i+1);
+        await sandPlate.lineTo(400 - 40 * i - 20, 0);
     }
 
 }

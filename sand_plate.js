@@ -14,8 +14,24 @@ class SandPlate {
          */
         this.radius_ = radius;
 
-        this.arm0Position_ = 0;
-        this.arm1Position_ = 0;
+        /**
+         * Rotated degrees, comparing to the starting position
+         * @type {number}
+         * @private
+         */
+        this.arm0Rotation_ = 0;
+        this.arm1Rotation_ = 0;
+
+        /**
+         * Handy memory of the last X coordinate of the ball. Range: [-400,400]
+         * @type {number}
+                  */
+        this.currentX = 400;
+        /**
+         * Handy memory of the last Y coordinate of the ball. Range: [-400,400]
+         * @type {number}
+         */
+        this.currentY = 0;
     }
 
     static get DEGREES_PER_STEP() {
@@ -46,24 +62,24 @@ class SandPlate {
      * Arm0 rotated degree from pointing to the right. Range is [0, 360].
      * @return {number} The angle in degree.
      */
-    get arm0Position() {
-        return (this.arm0Position_ % 360 + 360) % 360;
+    get arm0Rotation() {
+        return (this.arm0Rotation_ % 360 + 360) % 360;
     }
 
-    set arm0Position(position) {
-        this.arm0Position_ = position;
+    set arm0Rotation(position) {
+        this.arm0Rotation_ = position;
     }
 
     /**
      * Arm0 rotated degree from pointing to the right. Range is [0, 360].
      * @return {number} The angle in degree.
      */
-    get arm1Position() {
-        return (this.arm1Position_ % 360 + 360) % 360;
+    get arm1Rotation() {
+        return (this.arm1Rotation_ % 360 + 360) % 360;
     }
 
-    set arm1Position(position) {
-        this.arm1Position_ = position;
+    set arm1Rotation(position) {
+        this.arm1Rotation_ = position;
     }
 
     /**
@@ -139,8 +155,8 @@ class SandPlate {
 
     /**
      * Move end point of Arm1 to (x0, y0) from current location.
-     * @param x0 The x coordinates. X==0 here means the center of the circle.
-     * @param y0 The y coordinates. Y==0 here means the center of the circle.
+     * @param x0 The x coordinates. X==0 here means the center of the circle. Range: [-400,400]
+     * @param y0 The y coordinates. Y==0 here means the center of the circle. Range: [-400,400]
      * @returns {Promise<void>}
      */
     gotoPos = async (x0, y0) => {
@@ -171,12 +187,12 @@ class SandPlate {
          */
         let x1, x2, y1, y2;
         let act0, act1;
-        let a0 = this.arm0Position;
-        let a1 = this.arm1Position;
+        let a0 = this.arm0Rotation;
+        let a1 = this.arm1Rotation;
 
         if (x0 == 0 && y0 == 0) {
             /**
-             * When target is x0 = y0 = 0, simply move arm1Position to 180 and
+             * When target is x0 = y0 = 0, simply move arm1Rotation to 180 and
              * no need to move Arm0.
              */
             if (a1 <= 180) {
@@ -291,6 +307,35 @@ class SandPlate {
         this.drawBigDot(x0, y0);
     }
 
+    /**
+     * Tries its best to draw a (relatively) straight line to (x,y) from current position.
+     * @param x
+     * @param y
+     * @return {Promise<void>}
+     */
+    lineTo = async (x, y)=> {
+        //naive solution, in 50 steps
+        let dX = x - this.currentX;
+        let dY = y - this.currentY;
+
+        // larger difference decides the number of loops.
+        let largerDiff = dX > dY ? dX : dY;
+        const maxStepPerLoop = 4;
+        let numberOfLoops = largerDiff / 4;
+
+        // how many steps should we go
+        let xStepSize = dX / numberOfLoops;
+        let yStepSize = dY / numberOfLoops;
+        for (let i = 0;i<numberOfLoops;i++){
+            let newX = this.currentX +xStepSize;
+            let newY = this.currentY +yStepSize;
+            await this.gotoPos(newX, newY);
+        }
+        if (Math.abs(dX) <4 && Math.abs(dY) < 4) {
+            // close enough, just go.
+            await this.gotoPos(x, y);
+        }
+    }
 }
 
 export {SandPlate}

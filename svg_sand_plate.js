@@ -45,27 +45,15 @@ class SvgSandPlate extends SandPlate {
          * @type {number}
          * @private
          */
-        this.arm0Position = 0;
+        this.arm0Rotation = 0;
 
         /**
          * Arm 1 rotated angle in degrees, from parking position.
          * @type {number}
          * @private
          */
-        this.arm1Position = 0;
+        this.arm1Rotation = 0;
 
-        /**
-         * Handy memory of the last X coordinate of the ball.
-         * @type {number}
-         * @private
-         */
-        this.lastDrawnX0_ = 400;
-        /**
-         * Handy memory of the last Y coordinate of the ball.
-         * @type {number}
-         * @private
-         */
-        this.lastDrawnY0_ = 400;
     }
 
     /**
@@ -73,7 +61,7 @@ class SvgSandPlate extends SandPlate {
      * @private
      */
     drawArms_ = () => {
-        let x0 = this.radius_, y0 = this.radius_;
+        let x0 = this.radius, y0 = this.radius;
         // Actually the 'arm0' is the group of both arm0 and arm1.
         this.arm0_ = this.svgCanvas_.append('g');
 
@@ -119,9 +107,9 @@ class SvgSandPlate extends SandPlate {
      * @private
      */
     rotateArm0_ = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
-        this.arm0Position += SandPlate.DEGREES_PER_STEP * steps * (clockwise ? 1 : -1);
+        this.arm0Rotation += SandPlate.DEGREES_PER_STEP * steps * (clockwise ? 1 : -1);
         await this.sleep_(SandPlate.timeNeededForSteps(steps) + extraSleepTime)
-        this.arm0_.attr('transform', 'rotate(' + this.arm0Position + ',400,400)');
+        this.arm0_.attr('transform', 'rotate(' + this.arm0Rotation + ',400,400)');
         if (drawDotAfterRotation) this.drawDot_();
     }
 
@@ -151,9 +139,9 @@ class SvgSandPlate extends SandPlate {
      * @private
      */
     rotateArm1_ = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
-        this.arm1Position += SandPlate.DEGREES_PER_STEP * steps * (clockwise ? 1 : -1);
+        this.arm1Rotation += SandPlate.DEGREES_PER_STEP * steps * (clockwise ? 1 : -1);
         await this.sleep_(SandPlate.timeNeededForSteps(steps) + extraSleepTime)
-        this.arm1_.attr('transform', 'rotate(' + this.arm1Position + ',600,400)');
+        this.arm1_.attr('transform', 'rotate(' + this.arm1Rotation + ',600,400)');
         if (drawDotAfterRotation) this.drawDot_();
     }
 
@@ -164,17 +152,17 @@ class SvgSandPlate extends SandPlate {
     drawDot_ = () => {
         let r = this.radius / 2;
         let x0 = this.radius, y0 = this.radius;
-        let x1 = x0 + r * Math.cos(this.arm0Position * Math.PI / 180);
-        let y1 = y0 + r * Math.sin(this.arm0Position * Math.PI / 180);
-        let x2 = x1 + r * Math.cos((this.arm0Position + this.arm1Position) * Math.PI / 180);
-        let y2 = y1 + r * Math.sin((this.arm0Position + this.arm1Position) * Math.PI / 180);
+        let x1 = x0 + r * Math.cos(this.arm0Rotation * Math.PI / 180);
+        let y1 = y0 + r * Math.sin(this.arm0Rotation * Math.PI / 180);
+        let x2 = x1 + r * Math.cos((this.arm0Rotation + this.arm1Rotation) * Math.PI / 180);
+        let y2 = y1 + r * Math.sin((this.arm0Rotation + this.arm1Rotation) * Math.PI / 180);
 
         let context = this.canvas_.getContext('2d');
         context.beginPath();
-        context.moveTo(this.lastDrawnX0_, this.lastDrawnY0_);
+        context.moveTo(this.currentX + x0, this.currentY + x0);
         context.lineTo(x2, y2);
-        this.lastDrawnX0_ = x2;
-        this.lastDrawnY0_ = y2;
+        this.currentX = x2 - x0;
+        this.currentY = y2 - x0;
         context.stroke();
     }
 
@@ -185,6 +173,11 @@ class SvgSandPlate extends SandPlate {
         return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
 
+    /**
+     *
+     * @param x [-400,400]
+     * @param y [-400,400]
+     */
     drawBigDot = (x, y) => {
         // console.log('draw big dot at' +x+', '+y)
         let context = this.canvas_.getContext('2d');
@@ -193,6 +186,8 @@ class SvgSandPlate extends SandPlate {
         context.arc(x + 400, y + 400, 5, 0, 2 * Math.PI, true);
         context.stroke();
         context.strokeStyle = "#000000";
+        this.currentX = x;
+        this.currentY = y;
     }
 
     /**
