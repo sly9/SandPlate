@@ -356,47 +356,47 @@ class SvgSandPlate extends SandPlate {
         }
 
         let j0 = 0;
+        let mindist = 8 * r * r;
         for (let j = 0; j < 1024; ++j) {
-            xcur = r * Math.cos(a0 * Math.PI / 180);
-            ycur = r * Math.sin(a0 * Math.PI / 180);
+            xcur = r * Math.cos((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+            ycur = r * Math.sin((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
 
             let dist = (xcur - xt) * (xcur - xt) + (ycur - yt) * (ycur - yt);
             // console.log("j0 " + j + "  " + dist);
-            if (dist < eps) {
+            if (dist < mindist) {
                 j0 = j;
-                break;
+                mindist = dist;
             }
-
-            a0 += SandPlate.DEGREES_PER_STEP;
         }
+
+        a0 += j0 * SandPlate.DEGREES_PER_STEP;
 
         if (j0 <= 512) {
             act0 = this.rotateArm0(j0);
         } else {
-            j0 = 1024 - j0;
-            act0 = this.rotateArm0(j0, false);
+            act0 = this.rotateArm0(1024 - j0, false);
         }
 
         let j1 = 0;
+        mindist = 8 * r * r;
         for (let j = 0; j < 1024; ++j) {
-            xcur = r * Math.cos(a0 * Math.PI / 180) + r * Math.cos((a0 + a1) * Math.PI / 180);
-            ycur = r * Math.sin(a0 * Math.PI / 180) + r * Math.sin((a0 + a1) * Math.PI / 180);
+            xcur = r * Math.cos(a0 * Math.PI / 180) + r * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+            ycur = r * Math.sin(a0 * Math.PI / 180) + r * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
 
             let dist = (xcur - x0) * (xcur - x0) + (ycur - y0) * (ycur - y0);
             // console.log("j1 " + j + "  " + dist);
-            if (dist < eps) {
+            if (dist < mindist) {
                 j1 = j;
-                break;
+                mindist = dist;
             }
-
-            a1 += SandPlate.DEGREES_PER_STEP;
         }
+
+        a1 += j1 * SandPlate.DEGREES_PER_STEP;
 
         if (j1 <= 512) {
             act1 = this.rotateArm1(j1);
         } else {
-            j1 = 1024 - j1;
-            act1 = this.rotateArm1(j1, false);
+            act1 = this.rotateArm1(1024 - j1, false);
         }
 
         console.log("steps " + j0 + " " + j1);
