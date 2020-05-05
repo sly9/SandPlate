@@ -377,9 +377,9 @@ class SandPlate {
         let y0 = rightHandSide ? (curY + y) / 2 - (x - curX) * t : (curY + y) / 2 + (x - curX) * t;
 
         // v0 * exp(i * theta) = v1
-        // v0 = (xcur - x0, ycur - y0) & v1 = (x - x0, y - y0)
-        let v00 = xcur - x0;
-        let v01 = ycur - y0;
+        // v0 = (curX - x0, curY - y0) & v1 = (x - x0, y - y0)
+        let v00 = curX - x0;
+        let v01 = curY - y0;
         let v10 = x - x0;
         let v11 = y - y0;
 
