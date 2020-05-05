@@ -290,41 +290,79 @@ class SvgSandPlate extends SandPlate {
     gotoPos3 = async (x0, y0) => {
         console.log("gotoPos3 " + x0 + " " + y0);
 
-        let eps = 1.0e-3;
-
-        // x0 * x + y0 * y = 1/2 * r_0^2
-        // x^2 + y^2 = r^2
+        let eps = 1.0;
 
         let r = 200;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
 
-        let y1 = ( Math.pow(x0, 2) * y0 * Math.pow(r0, 2) + Math.sqrt( Math.pow(x0, 4) * Math.pow(y0, 2) * Math.pow(r0, 4) - ( Math.pow(x0, 2) * Math.pow(y0, 2) + 1 ) * ( Math.pow(r0, 4) * Math.pow(x0, 2) - 4 * Math.pow(r, 2)) ) ) / 2 / ( Math.pow(x0, 2) * Math.pow(y0, 2) + 1);
-        let y2 = ( Math.pow(x0, 2) * y0 * Math.pow(r0, 2) - Math.sqrt( Math.pow(x0, 4) * Math.pow(y0, 2) * Math.pow(r0, 4) - ( Math.pow(x0, 2) * Math.pow(y0, 2) + 1 ) * ( Math.pow(r0, 4) * Math.pow(x0, 2) - 4 * Math.pow(r, 2)) ) ) / 2 / ( Math.pow(x0, 2) * Math.pow(y0, 2) + 1);
+        // x0 * x + y0 * y = 1/2 * r_0^2
+        // x^2 + y^2 = r^2
 
-        let x1 = (1 / 2 * Math.pow(r0, 1) - y0 * y1) / x0;
-        let x2 = (1 / 2 * Math.pow(r0, 1) - y0 * y2) / x0;
-
+        let x1, x2, y1, y2;
+        let act0, act1;
         let a0 = this.arm0Rotation_;
         let a1 = this.arm1Rotation_;
 
-        let xcur = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1) * Math.PI / 180);
-        let ycur = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1) * Math.PI / 180);
+        // quick return
+        if (x0 == 0 && y0 == 0) {
+            if (a0 <= 180) {
+                act1 = rotateArm1((180 - a0) / SandPlate.DEGREES_PER_STEP);
+            } else {
+                act1 = rotateArm1((a0 - 180) / SandPlate.DEGREES_PER_STEP. false);
+            }
+
+            await Promise.all([act1]);
+            this.drawBigDot(x0, y0);
+
+            return;
+        } else if (x0 == 0) {
+            y1 = Math.pow(r0, 2) / 2 / y0;
+            y2 = y1;
+
+            x1 = Math.sqrt(Math.pow(r, 2) - Math.pow(y1, 2));
+            x2 = Math.sqrt(Math.pow(r, 2) - Math.pow(y2, 2));
+        } else if (y0 == 0) {
+            x1 = Math.pow(r0, 2) / 2 / x0;
+            x2 = x1;
+
+            y1 = Math.sqrt(Math.pow(r, 2) - Math.pow(x1, 2));
+            y2 = Math.sqrt(Math.pow(r, 2) - Math.pow(x2, 2));
+        } else {
+            let a = 4 * Math.pow(r0, 2);
+            let b = -4 * Math.pow(r0, 2) * y0;
+            let c = Math.pow(r0, 4) - 4 * Math.pow(r, 2) * Math.pow(x0, 2);
+
+            y1 = ( -1 * b + Math.sqrt(b * b - 4 * a * c)) / a / 2;
+            y2 = ( -1 * b - Math.sqrt(b * b - 4 * a * c)) / a / 2;
+
+            x1 = (r0 * r0 / 2 - y0 * y1) / x0;
+            x2 = (r0 * r0 / 2 - y0 * y2) / x0;
+        }
+
+        let xcur = r * Math.cos(a0 * Math.PI / 180);
+        let ycur = r * Math.sin(a0 * Math.PI / 180);
 
         let r1 = (xcur - x1) * (xcur - x1) + (ycur - y1) * (ycur - y1);
         let r2 = (xcur - x2) * (xcur - x2) + (ycur - y2) * (ycur - y2);
 
-        let act0;
-        let act1;
+        let xt, yt;
 
-        let xt = (r1 <= r2) ? x1 : x2;
-        let yt = (r1 <= r2) ? y1 : y2;
+        if (r1 <= r2) {
+            xt = x1;
+            yt = y1;
+        } else {
+            xt = x2;
+            yt = y2;
+        }
 
         let j0 = 0;
         for (let j = 0; j < 1024; ++j) {
-            xcur = 200 * Math.cos(a0 * Math.PI / 180);
-            ycur = 200 * Math.sin(a0 * Math.PI / 180);
+            xcur = r * Math.cos(a0 * Math.PI / 180);
+            ycur = r * Math.sin(a0 * Math.PI / 180);
 
-            if ((xcur - x1) * (xcur - x1) + (ycur - y1) * (ycur - y1) < eps) {
+            let dist = (xcur - xt) * (xcur - xt) + (ycur - yt) * (ycur - yt);
+            console.log("j0 " + j + "  " + dist);
+            if (dist < eps) {
                 j0 = j;
                 break;
             }
@@ -340,10 +378,12 @@ class SvgSandPlate extends SandPlate {
 
         let j1 = 0;
         for (let j = 0; j < 1024; ++j) {
-            xcur = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1) * Math.PI / 180);
-            ycur = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1) * Math.PI / 180);
+            xcur = r * Math.cos(a0 * Math.PI / 180) + r * Math.cos((a0 + a1) * Math.PI / 180);
+            ycur = r * Math.sin(a0 * Math.PI / 180) + r * Math.sin((a0 + a1) * Math.PI / 180);
 
-            if ((xcur - x0) * (xcur - x0) + (ycur - y0) * (ycur - y0) < eps) {
+            let dist = (xcur - x0) * (xcur - x0) + (ycur - y0) * (ycur - y0);
+            console.log("j1 " + j + "  " + dist);
+            if (dist < eps) {
                 j1 = j;
                 break;
             }
@@ -356,6 +396,8 @@ class SvgSandPlate extends SandPlate {
         } else {
             act1 = this.rotateArm1(1024 - j1, false);
         }
+
+        console.log("j  " + j0 + " " + j1);
 
         await Promise.all([act0, act1]);
         this.drawBigDot(x0, y0);
