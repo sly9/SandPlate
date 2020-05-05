@@ -348,6 +348,64 @@ class SandPlate {
             await this.gotoPos(x, y);
         }
     }
+
+    /**
+     * Draw an arc from current position to (x, y) with radius r
+     * @param x
+     * @param y
+     * @param radius Radius of the arc.
+     * @param rightHandSide Decides which side is the arc relative to the vector (current position) --> (x0, y0).
+     * @return {Promise<void>}
+     */
+    arcTo = async (x, y, radius, rightHandSide = true) => {
+        let curX = this.currentX;
+        let curY = this.currentY;
+
+        let dist = Math.sqrt((curX - x) * (curX - x) + (curY - y) * (curY - y));
+        if (dist > 2 * radius) {
+            console.warn(`WTF, this is impossible!`);
+            console.warn(`Go to {${x0}, ${y0}} in a line instead.`);
+            await this.lineTo(x, y);
+            return;
+        }
+
+        // find center of the arc
+        let t = Math.sqrt(radius * radius / dist / dist - 0.25);
+        let x0 = rightHandSide ? (curX + x) / 2 + (y - curY) * t : (curX + x) / 2 - (y - curY) * t;
+        let y0 = rightHandSide ? (curY + y) / 2 - (x - curX) * t : (curY + y) / 2 + (x - curX) * t;
+
+        // v0 * exp(i * theta) = v1
+        // v0 = (xcur - x0, ycur - y0) & v1 = (x - x0, y - y0)
+        let v00 = xcur - x0;
+        let v01 = ycur - y0;
+        let v10 = x - x0;
+        let v11 = y - y0;
+
+        let c = (v10 * v00 + v11 * v01) / (v00 * v00 + v01 * v01);
+        let s = (v11 * v00 - v10 * v01) / (v00 * v00 + v01 * v01);
+
+        let theta = this.trig2Angle(c, s);
+        if (!rightHandSide) theta -= 360;
+
+        const maxStepLength = 4;
+        let steps = Math.ceil(radius * Math.abs(theta) * Math.PI / 180 / maxStepLength);
+
+        c = Math.cos(theta / steps * Math.PI / 180);
+        s = Math.sin(theta / steps * Math.PI / 180);
+
+        let nextX, nextY;
+        for (let j = 0; j < steps-1; ++j) {
+            nextX = x0 + (curX - x0) * c - (curY - y0) * s;
+            nextY = y0 + (curY - y0) * c + (curX - x0) * s;
+
+            gotoPos(nextX, nextY);
+
+            curX = nextX;
+            curY = nextY;
+        }
+
+        await gotoPos(x, y);
+    }
 }
 
 export {SandPlate}
