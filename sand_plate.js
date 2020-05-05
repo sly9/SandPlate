@@ -67,6 +67,19 @@ class SandPlate {
     }
 
     /**
+     * Returns the time in milliseconds needed to rotate given steps.
+     * @param steps
+     * @returns {number}
+     */
+    static timeNeededForSteps = (steps) => {
+        // 1024 step == 1 round
+        // 1 round == 3 sec
+        // 1 step = 3/1024 * 1000 milli second
+        // 3 is good enough and fast
+        return 300 * steps;
+    }
+
+    /**
      * Rotates the arm (A0) connected to the center.
      * @param steps How many steps
      * @param {boolean} clockwise Whether this steps should be moving
@@ -109,7 +122,14 @@ class SandPlate {
         let largerClockwise = arm0Steps > arm1Steps ? arm0Clockwise : arm1Clockwise;
         let smallerClockwise = arm0Steps > arm1Steps ? arm1Clockwise : arm0Clockwise;
 
-        // smallest steps to move in one trunk: 3 (random value, change later?)
+        let timeNeededForLargerSteps = SandPlate.timeNeededForSteps(largerSteps);
+        let timeNeededForSmallerSteps = SandPlate.timeNeededForSteps(smallerSteps);
+
+        let timeNeededForSmallerStepsToWait = timeNeededForLargerSteps - timeNeededForSmallerSteps;
+
+        let promise0 = rotateLargerSteps(largerSteps, largerClockwise, drawDotAfterRotation);
+        let promise1 = rotateSmallerSteps(smallerSteps, smallerClockwise, drawDotAfterRotation, timeNeededForSmallerStepsToWait);
+        await Promise.all([promise0, promise1]);
     }
 
     // Draw a dot, noop for SVG

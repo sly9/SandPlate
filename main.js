@@ -73,18 +73,18 @@ let drawSquare = async () => {
 
     await sandPlate.gotoPos3(0, 0);
 
-    // for (let i = 0; i < 100; ++i) {
-    //     await sandPlate.gotoPos3(400 - i * 4, i * 4);
-    // }
-    // for (let i = 0; i < 100; ++i) {
-    //     await sandPlate.gotoPos3(- i * 4, 400 - i * 4);
-    // }
-    // for (let i = 0; i < 100; ++i) {
-    //     await sandPlate.gotoPos3(-400 + i * 4, - i * 4);
-    // }
-    // for (let i = 0; i < 100; ++i) {
-    //     await sandPlate.gotoPos3(i * 4, -400 + i * 4);
-    // }
+    for (let i = 0; i < 100; ++i) {
+        await sandPlate.gotoPos3(400 - i * 4, i * 4);
+    }
+    for (let i = 0; i < 100; ++i) {
+        await sandPlate.gotoPos3(- i * 4, 400 - i * 4);
+    }
+    for (let i = 0; i < 100; ++i) {
+        await sandPlate.gotoPos3(-400 + i * 4, - i * 4);
+    }
+    for (let i = 0; i < 100; ++i) {
+        await sandPlate.gotoPos3(i * 4, -400 + i * 4);
+    }
     
 };
 

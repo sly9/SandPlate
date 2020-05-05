@@ -67,19 +67,6 @@ class SvgSandPlate extends SandPlate {
     }
 
     /**
-     * Returns the time in milliseconds needed to rotate given steps.
-     * @param steps
-     * @returns {number}
-     */
-    timeNeededForSteps = (steps) => {
-        // 1024 step == 1 round
-        // 1 round == 3 sec
-        // 1 step = 3/1024 * 1000 milli second
-        // 3 is good enough and fast
-        return 3 * steps;
-    }
-
-    /**
      * Draws two arms for use.
      * @private
      */
@@ -110,16 +97,14 @@ class SvgSandPlate extends SandPlate {
             console.warn('Why on earth would you move negative steps? Change your direction!');
         }
 
-        while (true) {
-            if (steps < 3) {
-                await this.rotateArm0_(steps, clockwise, true);
-                break;
-            }
-            steps = steps - 3;
-            await this.rotateArm0_(3, clockwise, true);
+        let timeSlept = 0;
+        while (steps > 0) {
+            steps = steps - 1;
+            await this.rotateArm0_(1, clockwise, true, extraSleepTime / steps);
+            timeSlept += extraSleepTime / steps;
         }
-        if (extraSleepTime > 0) {
-            await this.sleep_(extraSleepTime);
+        if (timeSlept < extraSleepTime) {
+            await this.sleep_(extraSleepTime - timeSlept);
         }
     }
 
@@ -131,9 +116,9 @@ class SvgSandPlate extends SandPlate {
      * @return {Promise<void>}
      * @private
      */
-    rotateArm0_ = async (steps = 1, clockwise = true, drawDotAfterRotation = true) => {
+    rotateArm0_ = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
         this.arm0Position += SandPlate.DEGREES_PER_STEP * steps * (clockwise ? 1 : -1);
-        await this.sleep_(this.timeNeededForSteps(steps))
+        await this.sleep_(SandPlate.timeNeededForSteps(steps) + extraSleepTime)
         this.arm0_.attr('transform', 'rotate(' + this.arm0Position + ',400,400)');
         if (drawDotAfterRotation) this.drawDot_();
     }
@@ -144,16 +129,14 @@ class SvgSandPlate extends SandPlate {
             console.warn('Why on earth would you move negative steps? Change your direction!');
         }
 
-        while (true) {
-            if (steps < 3) {
-                await this.rotateArm1_(steps, clockwise, true);
-                break;
-            }
-            steps = steps - 3;
-            await this.rotateArm1_(3, clockwise, true);
+        let timeSlept = 0;
+        while (steps > 0) {
+            steps = steps - 1;
+            await this.rotateArm1_(1, clockwise, true, extraSleepTime / steps);
+            timeSlept += extraSleepTime / steps;
         }
-        if (extraSleepTime > 0) {
-            await this.sleep_(extraSleepTime);
+        if (timeSlept < extraSleepTime) {
+            await this.sleep_(extraSleepTime - timeSlept);
         }
     }
 
@@ -165,9 +148,9 @@ class SvgSandPlate extends SandPlate {
      * @return {Promise<void>}
      * @private
      */
-    rotateArm1_ = async (steps = 1, clockwise = true, drawDotAfterRotation = true) => {
+    rotateArm1_ = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
         this.arm1Position += SandPlate.DEGREES_PER_STEP * steps * (clockwise ? 1 : -1);
-        await this.sleep_(this.timeNeededForSteps(steps))
+        await this.sleep_(SandPlate.timeNeededForSteps(steps) + extraSleepTime)
         this.arm1_.attr('transform', 'rotate(' + this.arm1Position + ',600,400)');
         if (drawDotAfterRotation) this.drawDot_();
     }
