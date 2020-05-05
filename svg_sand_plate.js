@@ -52,12 +52,12 @@ class SvgSandPlate extends SandPlate {
 
     rotateArm0 = async (steps = 1, clockwise = true, drawDotAfterRotation = true) => {
         while  (true) {
-            if (steps < 5) {
+            if (steps < 3) {
                 await this.rotateArm0_(steps, clockwise, true);
                 return;
             }
-            steps = steps - 5;
-            await this.rotateArm0_(5, clockwise, true);
+            steps = steps - 3;
+            await this.rotateArm0_(3, clockwise, true);
         }
     }
 
@@ -71,12 +71,12 @@ class SvgSandPlate extends SandPlate {
 
     rotateArm1 = async (steps = 1, clockwise = true, drawDotAfterRotation = true) => {
         while  (true) {
-            if (steps < 5) {
+            if (steps < 3) {
                 await this.rotateArm1_(steps, clockwise, true);
                 return;
             }
-            steps = steps - 5;
-            await this.rotateArm1_(5, clockwise, true);
+            steps = steps - 3;
+            await this.rotateArm1_(3, clockwise, true);
         }
     }
 

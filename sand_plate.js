@@ -8,8 +8,15 @@ class SandPlate {
 
     /**
      * Constructor
+     * @type {number} radius The radius unit of the whole plate. (E.g. pixel for SVGSandPlate).
      */
-    constructor() {
+    constructor(radius) {
+        /**
+         * Radius
+         * @type {number}
+         * @private
+         */
+        this.radius_ = radius;
     }
 
     /**
