@@ -76,7 +76,7 @@ class SandPlate {
         // 1 round == 3 sec
         // 1 step = 3/1024 * 1000 milli second
         // 3 is good enough and fast
-        return 300 * steps;
+        return 3 * steps;
     }
 
     /**
@@ -413,13 +413,6 @@ class SandPlate {
 
         a0 += j0 * SandPlate.DEGREES_PER_STEP;
 
-        if (j0 <= SandPlate.STEPS_PER_ROUND / 2) {
-            act0 = this.rotateArm0(j0);
-        } else {
-            j0 = SandPlate.STEPS_PER_ROUND - j0;
-            act0 = this.rotateArm0(j0, false);
-        }
-
         let j1 = 0;
         mindist = 8 * r * r;
         for (let j = 0; j < SandPlate.STEPS_PER_ROUND; ++j) {
@@ -436,16 +429,26 @@ class SandPlate {
 
         a1 += j1 * SandPlate.DEGREES_PER_STEP;
 
-        if (j1 <= SandPlate.STEPS_PER_ROUND / 2) {
-            act1 = this.rotateArm1(j1);
+        let arm0Steps,arm0Clockwise, arm1Steps,arm1Clockwise;
+        if (j0 <= SandPlate.STEPS_PER_ROUND / 2) {
+            arm0Steps=j0;
+            arm0Clockwise=true;
         } else {
-            j1 = SandPlate.STEPS_PER_ROUND - j1;
-            act1 = this.rotateArm1(j1, false);
+            arm0Steps=SandPlate.STEPS_PER_ROUND - j0;
+            arm0Clockwise=false;
         }
+
+        if (j1 <= SandPlate.STEPS_PER_ROUND / 2) {
+            arm1Steps = j1;
+            arm1Clockwise = true;
+        } else {
+            arm1Steps = SandPlate.STEPS_PER_ROUND - j1;
+            arm1Clockwise = false;
+        }
+        await this.rotateBothArms(arm0Steps,arm0Clockwise,arm1Steps,arm1Clockwise,true);
 
         console.log("steps " + j0 + " " + j1);
 
-        await Promise.all([act0, act1]);
         this.drawBigDot(x0, y0);
     }
 
