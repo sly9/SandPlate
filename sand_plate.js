@@ -346,6 +346,8 @@ class SandPlate {
                 act1 = this.rotateArm1((a0 - 180) / SandPlate.DEGREES_PER_STEP, false);
             }
 
+            console.log("steps " + 0 + " " + Math.abs(180 - a0) / SandPlate.DEGREES_PER_STEP);
+
             await Promise.all([act1]);
             this.drawBigDot(x0, y0);
 
@@ -414,7 +416,8 @@ class SandPlate {
         if (j0 <= SandPlate.STEPS_PER_ROUND / 2) {
             act0 = this.rotateArm0(j0);
         } else {
-            act0 = this.rotateArm0(SandPlate.STEPS_PER_ROUND - j0, false);
+            j0 = SandPlate.STEPS_PER_ROUND - j0;
+            act0 = this.rotateArm0(j0, false);
         }
 
         let j1 = 0;
@@ -436,7 +439,8 @@ class SandPlate {
         if (j1 <= SandPlate.STEPS_PER_ROUND / 2) {
             act1 = this.rotateArm1(j1);
         } else {
-            act1 = this.rotateArm1(SandPlate.STEPS_PER_ROUND - j1, false);
+            j1 = SandPlate.STEPS_PER_ROUND - j1;
+            act1 = this.rotateArm1(j1, false);
         }
 
         console.log("steps " + j0 + " " + j1);
