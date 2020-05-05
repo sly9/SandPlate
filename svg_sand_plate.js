@@ -159,10 +159,10 @@ class SvgSandPlate extends SandPlate {
 
         let context = this.canvas_.getContext('2d');
         context.beginPath();
-        context.moveTo(this.currentX + x0, this.currentY + x0);
+        context.moveTo(this.lastDrawnX0_, this.lastDrawnY0_);
         context.lineTo(x2, y2);
-        this.currentX = x2 - x0;
-        this.currentY = y2 - x0;
+        this.lastDrawnX0_ = x2;
+        this.lastDrawnY0_ = y2;
         context.stroke();
     }
 
@@ -173,11 +173,6 @@ class SvgSandPlate extends SandPlate {
         return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
 
-    /**
-     *
-     * @param x [-400,400]
-     * @param y [-400,400]
-     */
     drawBigDot = (x, y) => {
         // console.log('draw big dot at' +x+', '+y)
         let context = this.canvas_.getContext('2d');
@@ -186,8 +181,6 @@ class SvgSandPlate extends SandPlate {
         context.arc(x + 400, y + 400, 5, 0, 2 * Math.PI, true);
         context.stroke();
         context.strokeStyle = "#000000";
-        this.currentX = x;
-        this.currentY = y;
     }
 
     /**

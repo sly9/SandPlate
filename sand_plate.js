@@ -21,17 +21,6 @@ class SandPlate {
          */
         this.arm0Rotation_ = 0;
         this.arm1Rotation_ = 0;
-
-        /**
-         * Handy memory of the last X coordinate of the ball. Range: [-400,400]
-         * @type {number}
-                  */
-        this.currentX = 400;
-        /**
-         * Handy memory of the last Y coordinate of the ball. Range: [-400,400]
-         * @type {number}
-         */
-        this.currentY = 0;
     }
 
     static get DEGREES_PER_STEP() {
@@ -80,6 +69,28 @@ class SandPlate {
 
     set arm1Rotation(position) {
         this.arm1Rotation_ = position;
+    }
+
+    /**
+     * X coordinate of the ball. Range: [-400,400]
+     * @return {number}
+     */
+    get currentX() {
+        let r = this.radius / 2;
+        let x1 = r * Math.cos(this.arm0Rotation * Math.PI / 180);
+        let x2 = x1 + r * Math.cos((this.arm0Rotation + this.arm1Rotation) * Math.PI / 180);
+        return x2;
+    }
+
+    /**
+     * Y coordinate of the ball. Range: [-400,400]
+     * @return {number}
+     */
+    get currentY() {
+        let r = this.radius / 2;
+        let y1 = r * Math.sin(this.arm0Rotation * Math.PI / 180);
+        let y2 = y1 + r * Math.sin((this.arm0Rotation + this.arm1Rotation) * Math.PI / 180);
+        return y2;
     }
 
     /**
@@ -313,7 +324,7 @@ class SandPlate {
      * @param y
      * @return {Promise<void>}
      */
-    lineTo = async (x, y)=> {
+    lineTo = async (x, y) => {
         //naive solution, in 50 steps
         let dX = x - this.currentX;
         let dY = y - this.currentY;
@@ -324,14 +335,15 @@ class SandPlate {
         let numberOfLoops = largerDiff / 4;
 
         // how many steps should we go
+        let startX = this.currentX;
+        let startY = this.currentY;
+
         let xStepSize = dX / numberOfLoops;
         let yStepSize = dY / numberOfLoops;
-        for (let i = 0;i<numberOfLoops;i++){
-            let newX = this.currentX +xStepSize;
-            let newY = this.currentY +yStepSize;
-            await this.gotoPos(newX, newY);
+        for (let i = 1; i <= numberOfLoops; i++) {
+            await this.gotoPos(i * xStepSize + startX, i * yStepSize + startY);
         }
-        if (Math.abs(dX) <4 && Math.abs(dY) < 4) {
+        if (Math.abs(dX) < 4 && Math.abs(dY) < 4) {
             // close enough, just go.
             await this.gotoPos(x, y);
         }
