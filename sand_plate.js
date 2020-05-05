@@ -311,13 +311,13 @@ class SandPlate {
 
         // quick return
         if (x0 == 0 && y0 == 0) {
-            if (a0 <= 180) {
-                act1 = this.rotateArm1((180 - a0) / SandPlate.DEGREES_PER_STEP);
+            if (a1 <= 180) {
+                act1 = this.rotateArm1((180 - a1) / SandPlate.DEGREES_PER_STEP);
             } else {
-                act1 = this.rotateArm1((a0 - 180) / SandPlate.DEGREES_PER_STEP, false);
+                act1 = this.rotateArm1((a1 - 180) / SandPlate.DEGREES_PER_STEP, false);
             }
 
-            console.log("steps " + 0 + " " + Math.abs(180 - a0) / SandPlate.DEGREES_PER_STEP);
+            console.log("steps " + 0 + Math.abs(180 - a1) / SandPlate.DEGREES_PER_STEP);
 
             await Promise.all([act1]);
             this.drawBigDot(x0, y0);
