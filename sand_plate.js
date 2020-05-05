@@ -144,7 +144,7 @@ class SandPlate {
      * @returns {Promise<void>}
      */
     gotoPos = async (x0, y0) => {
-        console.log('gotoPos ' + x0 + " " + y0);
+        console.log(`gotoPos {${x0}, ${y0}}`);
 
         let r = this.armLength;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
@@ -185,7 +185,7 @@ class SandPlate {
                 act1 = this.rotateArm1((a1 - 180) / SandPlate.DEGREES_PER_STEP, false);
             }
 
-            console.log("steps " + 0 + " " + Math.floor(Math.abs((180 - a1) / SandPlate.DEGREES_PER_STEP)));
+            console.log('steps ' + 0 + ' ' + Math.floor(Math.abs((180 - a1) / SandPlate.DEGREES_PER_STEP)));
 
             await Promise.all([act1]);
             this.drawBigDot(x0, y0);
@@ -222,7 +222,7 @@ class SandPlate {
 
         /**
          * Compute the current position of Arm0 and move it to the closer
-         * one in (x1, y1) and (x2, y2) to "minimize" movement.
+         * one in (x1, y1) and (x2, y2) to 'minimize' movement.
          */
         let xcur = r * Math.cos(a0 * Math.PI / 180);
         let ycur = r * Math.sin(a0 * Math.PI / 180);
@@ -265,7 +265,7 @@ class SandPlate {
 
         let j1 = Math.floor(delta / SandPlate.DEGREES_PER_STEP);
 
-        console.log("steps " + j0 + " " + j1);
+        console.log('steps ' + j0 + ' ' + j1);
 
         /**
          * Rotate Arm0 and Arm1 clockwise by j0 and j1 steps synchronously
