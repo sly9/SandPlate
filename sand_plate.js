@@ -358,6 +358,8 @@ class SandPlate {
      * @return {Promise<void>}
      */
     arcTo = async (x, y, radius, rightHandSide = true) => {
+        console.log(`arcTo (${x}, ${y}) with radius ${radius}`);
+
         let curX = this.currentX;
         let curY = this.currentY;
 
