@@ -46,7 +46,7 @@ class SvgSandPlate extends SandPlate {
         // Actually the 'arm0' is the group of both arm0 and arm1.
         this.arm0_ = this.svgCanvas_.append('g');
 
-        this.realArm0_ = this.arm0_.append('line').attr('x1', x0).attr('x2', x0 * 1.5).attr('y1', y0).attr('y2', y0).attr('stroke', 'black');
+        this.realArm0_ = this.arm0_.append('line').attr('x1', x0).attr('x2', x0 * 1.5).attr('y1', y0).attr('y2', y0).attr('stroke', 'blue');
         this.arm1_ = this.arm0_.append('line').attr('x1', x0 * 2).attr('x2', x0 * 1.5).attr('y1', y0).attr('y2', y0).attr('stroke', 'red');
     }
 
