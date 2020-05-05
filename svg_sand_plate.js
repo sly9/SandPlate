@@ -262,7 +262,7 @@ class SvgSandPlate extends SandPlate {
             if (mindist < eps) { break; }
         }
 
-        console.log("j " + j0 + "  " + j1);
+        // console.log("j " + j0 + "  " + j1);
 
         a0 += j0 * SandPlate.DEGREES_PER_STEP;
         a1 += j0 * SandPlate.DEGREES_PER_STEP;
@@ -361,7 +361,7 @@ class SvgSandPlate extends SandPlate {
             ycur = r * Math.sin(a0 * Math.PI / 180);
 
             let dist = (xcur - xt) * (xcur - xt) + (ycur - yt) * (ycur - yt);
-            console.log("j0 " + j + "  " + dist);
+            // console.log("j0 " + j + "  " + dist);
             if (dist < eps) {
                 j0 = j;
                 break;
@@ -373,7 +373,8 @@ class SvgSandPlate extends SandPlate {
         if (j0 <= 512) {
             act0 = this.rotateArm0(j0);
         } else {
-            act0 = this.rotateArm0(1024 - j0, false);
+            j0 = 1024 - j0;
+            act0 = this.rotateArm0(j0, false);
         }
 
         let j1 = 0;
@@ -382,7 +383,7 @@ class SvgSandPlate extends SandPlate {
             ycur = r * Math.sin(a0 * Math.PI / 180) + r * Math.sin((a0 + a1) * Math.PI / 180);
 
             let dist = (xcur - x0) * (xcur - x0) + (ycur - y0) * (ycur - y0);
-            console.log("j1 " + j + "  " + dist);
+            // console.log("j1 " + j + "  " + dist);
             if (dist < eps) {
                 j1 = j;
                 break;
@@ -394,10 +395,11 @@ class SvgSandPlate extends SandPlate {
         if (j1 <= 512) {
             act1 = this.rotateArm1(j1);
         } else {
-            act1 = this.rotateArm1(1024 - j1, false);
+            j1 = 1024 - j1;
+            act1 = this.rotateArm1(j1, false);
         }
 
-        console.log("j  " + j0 + " " + j1);
+        console.log("steps " + j0 + " " + j1);
 
         await Promise.all([act0, act1]);
         this.drawBigDot(x0, y0);
