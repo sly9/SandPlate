@@ -138,36 +138,50 @@ class SandPlate {
     }
 
     /**
-     * Third version of goto(X,Y) from current location.
+     * Move end point of Arm1 to (x0, y0) from current location.
      * @param x0 The x coordinates. X==0 here means the center of the circle.
      * @param y0 The y coordinates. Y==0 here means the center of the circle.
      * @returns {Promise<void>}
      */
     gotoPos = async (x0, y0) => {
-        console.log("gotoPos3 " + x0 + " " + y0);
-
-        let eps = 1.0;
-
+        console.log('gotoPos ' + x0 + " " + y0);
+        
         let r = this.armLength;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
 
-        // x0 * x + y0 * y = 1/2 * r_0^2
-        // x^2 + y^2 = r^2
+        if (r0 > this.radius_) {
+            console.warn('Out of range.');
+        }
 
+        /**
+         * In order to move Arm1 to (x0, y0), first we need find where to move Arm0.
+         * For any given (x0, y0) except when x0 = y0 = 0, there are two possible
+         * positions for Arm0: the solution (x_i, y_i) (i = 1 or 2) of the following
+         * quadratic equations
+         *              x^2    +     y^2    = r^2
+         *          (x - x0)^2 + (y - y0)^2 = r^2
+         * or, equivalently,
+         *            x^2  +   y^2  = r^2
+         *          x0 * x + y0 * y = r0^2 / 2
+         * where r0^2 = x0^2 + y0^2.
+         */
         let x1, x2, y1, y2;
         let act0, act1;
         let a0 = this.arm0Position;
         let a1 = this.arm1Position;
 
-        // quick return
         if (x0 == 0 && y0 == 0) {
+            /**
+             * When target is x0 = y0 = 0, simply move arm1Position to 180 and
+             * no need to move Arm0.
+             */
             if (a1 <= 180) {
                 act1 = this.rotateArm1((180 - a1) / SandPlate.DEGREES_PER_STEP);
             } else {
                 act1 = this.rotateArm1((a1 - 180) / SandPlate.DEGREES_PER_STEP, false);
             }
 
-            console.log("steps " + 0 + Math.abs(180 - a1) / SandPlate.DEGREES_PER_STEP);
+            console.log("steps " + 0 + " " + Math.floor(Math.abs((180 - a1) / SandPlate.DEGREES_PER_STEP)));
 
             await Promise.all([act1]);
             this.drawBigDot(x0, y0);
@@ -202,54 +216,62 @@ class SandPlate {
             x2 = (r0 * r0 / 2 - y0 * y2) / x0;
         }
 
+        /**
+         * Compute the current position of Arm0 and move it to the closer
+         * one in (x1, y1) and (x2, y2) to "minimize" movement.
+         */
         let xcur = r * Math.cos(a0 * Math.PI / 180);
         let ycur = r * Math.sin(a0 * Math.PI / 180);
 
         let r1 = (xcur - x1) * (xcur - x1) + (ycur - y1) * (ycur - y1);
         let r2 = (xcur - x2) * (xcur - x2) + (ycur - y2) * (ycur - y2);
 
-        let xt, yt;
+        let xt = r1 <= r2 ? x1 : x2;
+        let yt = r1 <= r2 ? y1 : y2;
 
-        if (r1 <= r2) {
-            xt = x1;
-            yt = y1;
-        } else {
-            xt = x2;
-            yt = y2;
+        /**
+         * Now (xt, yt) is the target position for Arm0, find alpha in [0, 2*PI) so that
+         * (r * cos(alpha), r * sin(alpha)) is as close as possible to (xt, yt), the exact
+         * solution is
+         *      cos(alpha) = xt / r
+         *      sin(alpha) = yt / r
+         */
+        let alpha = this.trig2Angle(xt / r, yt / r);
+        let delta = alpha - a0;
+        while (delta < 0) {
+            delta += 360;
         }
 
-        let j0 = 0;
-        let mindist = 8 * r * r;
-        for (let j = 0; j < SandPlate.STEPS_PER_ROUND; ++j) {
-            xcur = r * Math.cos((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
-            ycur = r * Math.sin((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
-
-            let dist = (xcur - xt) * (xcur - xt) + (ycur - yt) * (ycur - yt);
-            // console.log("j0 " + j + "  " + dist);
-            if (dist < mindist) {
-                j0 = j;
-                mindist = dist;
-            }
-        }
-
+        let j0 = Math.floor(delta / SandPlate.DEGREES_PER_STEP);
         a0 += j0 * SandPlate.DEGREES_PER_STEP;
-
-        let j1 = 0;
-        mindist = 8 * r * r;
-        for (let j = 0; j < SandPlate.STEPS_PER_ROUND; ++j) {
-            xcur = r * Math.cos(a0 * Math.PI / 180) + r * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
-            ycur = r * Math.sin(a0 * Math.PI / 180) + r * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
-
-            let dist = (xcur - x0) * (xcur - x0) + (ycur - y0) * (ycur - y0);
-            // console.log("j1 " + j + "  " + dist);
-            if (dist < mindist) {
-                j1 = j;
-                mindist = dist;
-            }
+        while (a0 >= 360) {
+            a0 -= 360;
         }
 
-        a1 += j1 * SandPlate.DEGREES_PER_STEP;
+        xt = r * Math.cos(a0 * Math.PI / 180);
+        yt = r * Math.sin(a0 * Math.PI / 180);
 
+        /**
+         * Now Arm0 is done, move Arm1 to (x0, y0) by finding beta where
+         *      cos(beta) = (x0 - xt) / rt
+         *      sin(beta) = (y0 - yt) / rt
+         * where rt^2 = (x0 - xt)^2 + (y0 - yt)^2.
+         * Note: the distance between (xt, yt) and (x0, y0) is not exactly r.
+         */
+        let rt = Math.sqrt((x0 - xt) * (x0 - xt) + (y0 - yt) * (y0 - yt));
+        let beta = this.trig2Angle((x0 - xt) / rt, (y0 - yt) / rt);
+        delta = beta - a0 - a1;
+        while (delta < 0) {
+            delta += 360;
+        }
+
+        let j1 = Math.floor(delta / SandPlate.DEGREES_PER_STEP);
+
+        console.log("steps " + j0 + " " + j1);
+
+        /**
+         * Rotate Arm0 and Arm1 clockwise by j0 and j1 steps synchronously
+         */
         let arm0Steps,arm0Clockwise, arm1Steps,arm1Clockwise;
         if (j0 <= SandPlate.STEPS_PER_ROUND / 2) {
             arm0Steps=j0;
@@ -267,8 +289,6 @@ class SandPlate {
             arm1Clockwise = false;
         }
         await this.rotateBothArms(arm0Steps,arm0Clockwise,arm1Steps,arm1Clockwise,true);
-
-        console.log("steps " + j0 + " " + j1);
 
         this.drawBigDot(x0, y0);
     }

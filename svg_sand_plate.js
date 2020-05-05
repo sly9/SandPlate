@@ -193,4 +193,26 @@ class SvgSandPlate extends SandPlate {
         context.strokeStyle = "#000000";
     }
 
+    /**
+     * Return angle in degree.
+     * @private
+     */
+    trig2Angle = (c, s) => {
+        if (s == 0) {
+            return c > 0 ? 0 : 180;
+        }
+        if (c == 0) {
+            return s > 0 ? 90 : 270;
+        }
+
+        let alpha = Math.asin(s) * 180 / Math.PI; // [-90, 90]
+        if (c < 0) {
+            alpha = 180 - alpha;
+        } else if (s < 0) {
+            alpha += 360;
+        }
+
+        return alpha;
+    }
+
 }
