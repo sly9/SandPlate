@@ -151,8 +151,9 @@ let drawArcs = async() => {
         let a = Math.random() * Math.PI * 2;
         let r = Math.random() * 400;
         let r1 = Math.random() * 400;
+        let rhs = Math.random() > 0.5 ? true : false;
 
-        await sandPlate.arcTo(r * Math.cos(a), r * Math.sin(a), r1);
+        await sandPlate.arcTo(r * Math.cos(a), r * Math.sin(a), r1, rhs);
     }
 
 }
