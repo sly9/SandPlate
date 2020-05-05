@@ -40,6 +40,7 @@ let drawSpiral = async () => {
 
 let drawGear = async () => {
     console.log('Draw a gear like spiral');
+    await sandPlate.gotoPos(0, 0);
     for (let i = 0; i < 10000; i++) {
         if (i % 3 == 0) {
             let a0 = sandPlate.rotateArm0(10);
@@ -55,7 +56,7 @@ let drawGear = async () => {
 
 let drawNestedSpiral = async () => {
     console.log('Draw a spiral');
-    await sandPlate.rotateArm1(512);
+    await sandPlate.gotoPos(0, 0);
     for (let i = 0; i < 10000; i++) {
         if (i % 3 == 0) {
             let a0 = sandPlate.rotateArm0(1);
