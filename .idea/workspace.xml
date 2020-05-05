@@ -20,13 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4270d844-a61a-46d2-a7bc-025a3853ef43" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/SandPlate.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SandPlate.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sand_plate.js" beforeDir="false" afterPath="$PROJECT_DIR$/sand_plate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sandsara.html" beforeDir="false" afterPath="$PROJECT_DIR$/sandsara.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/svg_sand_plate.js" beforeDir="false" afterPath="$PROJECT_DIR$/svg_sand_plate.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +54,7 @@
       <option name="presentableId" value="Default" />
       <updated>1588562414365</updated>
       <workItem from="1588562416955" duration="933000" />
-      <workItem from="1588644245063" duration="5472000" />
+      <workItem from="1588644245063" duration="5746000" />
     </task>
     <servers />
   </component>

@@ -54,16 +54,16 @@ class SandPlate {
         this.arm0Position_ = position;
     }
 
-    set arm1Position(position) {
-        this.arm1Position_ = position;
-    }
-
     /**
      * Arm0 rotated degree from pointing to the right. Range is [0, 360].
      * @return {number} The angle in degree.
      */
     get arm1Position() {
         return (this.arm1Position_ % 360 + 360) % 360;
+    }
+
+    set arm1Position(position) {
+        this.arm1Position_ = position;
     }
 
     /**
@@ -195,8 +195,8 @@ class SandPlate {
         // console.log("arg : " + a0 + "  " + a1);
 
         // initial position
-        let x0 = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1) * Math.PI / 180);
-        let y0 = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1) * Math.PI / 180);
+        let x0 = this.armLength * Math.cos(a0 * Math.PI / 180) + this.armLength * Math.cos((a0 + a1) * Math.PI / 180);
+        let y0 = this.armLength * Math.sin(a0 * Math.PI / 180) + this.armLength * Math.sin((a0 + a1) * Math.PI / 180);
         let r0 = x0 * x0 + y0 * y0;
 
         let r = x * x + y * y;
@@ -210,9 +210,9 @@ class SandPlate {
         let x1;
         let y1;
         let r1;
-        for (j = 0; j < 1024; ++j) {
-            x1 = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
-            y1 = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+        for (j = 0; j < SandPlate.STEPS_PER_ROUND; ++j) {
+            x1 = this.armLength * Math.cos(a0 * Math.PI / 180) + this.armLength * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+            y1 = this.armLength * Math.sin(a0 * Math.PI / 180) + this.armLength * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
             r1 = x1 * x1 + y1 * y1;
 
             if (Math.abs(r - r1) < mindist) {
@@ -232,8 +232,8 @@ class SandPlate {
         // console.log("arg : " + a0 + "  " + a1);
 
         // current position x1, y1
-        x1 = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1) * Math.PI / 180);
-        y1 = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1) * Math.PI / 180);
+        x1 = this.armLength * Math.cos(a0 * Math.PI / 180) + this.armLength * Math.cos((a0 + a1) * Math.PI / 180);
+        y1 = this.armLength * Math.sin(a0 * Math.PI / 180) + this.armLength * Math.sin((a0 + a1) * Math.PI / 180);
 
         // console.log("x1 y1 " + x1 + " " + y1);
 
@@ -245,9 +245,9 @@ class SandPlate {
 
         // console.log("dist " + mindist);
 
-        for (j = 0; j < 1024; ++j) {
-            x1 = 200 * Math.cos((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180) + 200 * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
-            y1 = 200 * Math.sin((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180) + 200 * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+        for (j = 0; j < SandPlate.STEPS_PER_ROUND; ++j) {
+            x1 = this.armLength * Math.cos((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180) + this.armLength * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+            y1 = this.armLength * Math.sin((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180) + this.armLength * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
 
             let dist = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
 
@@ -273,14 +273,14 @@ class SandPlate {
         if (j0 <= 512) {
             act0 = this.rotateArm0(j0, true);
         } else {
-            act0 = this.rotateArm0(1024 - j0, false);
+            act0 = this.rotateArm0(SandPlate.STEPS_PER_ROUND - j0, false);
         }
 
         let act1;
         if (j1 <= 512) {
             act1 = this.rotateArm1(j1, true);
         } else {
-            act1 = this.rotateArm1(1024 - j1, false);
+            act1 = this.rotateArm1(SandPlate.STEPS_PER_ROUND - j1, false);
         }
 
         await Promise.all([act0, act1]);
@@ -298,7 +298,7 @@ class SandPlate {
 
         let eps = 1.0;
 
-        let r = 200;
+        let r = this.armLength;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
 
         // x0 * x + y0 * y = 1/2 * r_0^2
@@ -363,7 +363,7 @@ class SandPlate {
 
         let j0 = 0;
         let mindist = 8 * r * r;
-        for (let j = 0; j < 1024; ++j) {
+        for (let j = 0; j < SandPlate.STEPS_PER_ROUND; ++j) {
             xcur = r * Math.cos((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
             ycur = r * Math.sin((a0 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
 
@@ -380,12 +380,12 @@ class SandPlate {
         if (j0 <= 512) {
             act0 = this.rotateArm0(j0);
         } else {
-            act0 = this.rotateArm0(1024 - j0, false);
+            act0 = this.rotateArm0(SandPlate.STEPS_PER_ROUND - j0, false);
         }
 
         let j1 = 0;
         mindist = 8 * r * r;
-        for (let j = 0; j < 1024; ++j) {
+        for (let j = 0; j < SandPlate.STEPS_PER_ROUND; ++j) {
             xcur = r * Math.cos(a0 * Math.PI / 180) + r * Math.cos((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
             ycur = r * Math.sin(a0 * Math.PI / 180) + r * Math.sin((a0 + a1 + j * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
 
@@ -402,7 +402,7 @@ class SandPlate {
         if (j1 <= 512) {
             act1 = this.rotateArm1(j1);
         } else {
-            act1 = this.rotateArm1(1024 - j1, false);
+            act1 = this.rotateArm1(SandPlate.STEPS_PER_ROUND - j1, false);
         }
 
         console.log("steps " + j0 + " " + j1);
