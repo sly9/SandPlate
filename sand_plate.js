@@ -366,7 +366,7 @@ class SandPlate {
         let dist = Math.sqrt((curX - x) * (curX - x) + (curY - y) * (curY - y));
         if (dist > 2 * radius) {
             console.warn(`WTF, this is impossible!`);
-            console.warn(`Go to {${x0}, ${y0}} in a line instead.`);
+            console.warn(`Go to {${x}, ${y}} in a line instead.`);
             await this.lineTo(x, y);
             return;
         }
@@ -389,6 +389,8 @@ class SandPlate {
         let theta = this.trig2Angle(c, s);
         if (!rightHandSide) theta -= 360;
 
+        console.log('theta ' + theta);
+
         const maxStepLength = 4;
         let steps = Math.ceil(radius * Math.abs(theta) * Math.PI / 180 / maxStepLength);
 
@@ -400,7 +402,7 @@ class SandPlate {
             nextX = x0 + (curX - x0) * c - (curY - y0) * s;
             nextY = y0 + (curY - y0) * c + (curX - x0) * s;
 
-            this.gotoPos(nextX, nextY);
+            await this.gotoPos(nextX, nextY);
 
             curX = nextX;
             curY = nextY;

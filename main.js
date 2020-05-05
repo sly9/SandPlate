@@ -147,10 +147,14 @@ let drawStrange = async() => {
 let drawArcs = async() => {
     console.log('Draw arcs');
 
-    await sandPlate.gotoPos(400, 0);
+    for (let i = 0; i < 10; ++i) {
+        let a = Math.random() * Math.PI * 2;
+        let r = Math.random() * 400;
+        let r1 = Math.random() * 400;
 
-    await sandPlate.arcTo(0, 0, 200);
-    await sandPlate.arcTo(400, 0, 200);
+        await sandPlate.arcTo(r * Math.cos(a), r * Math.sin(a), r1);
+    }
+
 }
 
 document.addEventListener("DOMContentLoaded", init);
