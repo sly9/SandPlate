@@ -20,14 +20,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4270d844-a61a-46d2-a7bc-025a3853ef43" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Driver.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Plan.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sand_plate.js" beforeDir="false" afterPath="$PROJECT_DIR$/sand_plate.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sandsara.html" beforeDir="false" afterPath="$PROJECT_DIR$/sandsara.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/svg_sand_plate.js" beforeDir="false" afterPath="$PROJECT_DIR$/svg_sand_plate.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -56,6 +67,7 @@
       <updated>1588562414365</updated>
       <workItem from="1588562416955" duration="933000" />
       <workItem from="1588644245063" duration="6000000" />
+      <workItem from="1588696419041" duration="1796000" />
     </task>
     <servers />
   </component>
@@ -72,6 +84,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1226" y="201" key="SettingsEditor" timestamp="1588645373893">

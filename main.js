@@ -1,3 +1,6 @@
+import {SvgSandPlate} from './svg_sand_plate.js'
+import {Driver} from "./Driver.js";
+
 let init = () => {
     console.log('Initializing...');
     /** @type {Element} */

@@ -1,3 +1,5 @@
+import {SandPlate} from './sand_plate.js'
+
 class SvgSandPlate extends SandPlate {
     /**
      * Constructor
@@ -216,3 +218,5 @@ class SvgSandPlate extends SandPlate {
     }
 
 }
+
+export {SvgSandPlate}

@@ -145,7 +145,7 @@ class SandPlate {
      */
     gotoPos = async (x0, y0) => {
         console.log('gotoPos ' + x0 + " " + y0);
-        
+
         let r = this.armLength;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
 
@@ -272,13 +272,13 @@ class SandPlate {
         /**
          * Rotate Arm0 and Arm1 clockwise by j0 and j1 steps synchronously
          */
-        let arm0Steps,arm0Clockwise, arm1Steps,arm1Clockwise;
+        let arm0Steps, arm0Clockwise, arm1Steps, arm1Clockwise;
         if (j0 <= SandPlate.STEPS_PER_ROUND / 2) {
-            arm0Steps=j0;
-            arm0Clockwise=true;
+            arm0Steps = j0;
+            arm0Clockwise = true;
         } else {
-            arm0Steps=SandPlate.STEPS_PER_ROUND - j0;
-            arm0Clockwise=false;
+            arm0Steps = SandPlate.STEPS_PER_ROUND - j0;
+            arm0Clockwise = false;
         }
 
         if (j1 <= SandPlate.STEPS_PER_ROUND / 2) {
@@ -288,9 +288,11 @@ class SandPlate {
             arm1Steps = SandPlate.STEPS_PER_ROUND - j1;
             arm1Clockwise = false;
         }
-        await this.rotateBothArms(arm0Steps,arm0Clockwise,arm1Steps,arm1Clockwise,true);
+        await this.rotateBothArms(arm0Steps, arm0Clockwise, arm1Steps, arm1Clockwise, true);
 
         this.drawBigDot(x0, y0);
     }
 
 }
+
+export {SandPlate}
