@@ -335,20 +335,25 @@ class SandPlate {
             y2 = y1;
 
             x1 = Math.sqrt(Math.pow(r, 2) - Math.pow(y1, 2));
-            x2 = Math.sqrt(Math.pow(r, 2) - Math.pow(y2, 2));
+            x2 = -1 * Math.sqrt(Math.pow(r, 2) - Math.pow(y2, 2));
         } else if (y0 == 0) {
             x1 = Math.pow(r0, 2) / 2 / x0;
             x2 = x1;
 
             y1 = Math.sqrt(Math.pow(r, 2) - Math.pow(x1, 2));
-            y2 = Math.sqrt(Math.pow(r, 2) - Math.pow(x2, 2));
+            y2 = -1 * Math.sqrt(Math.pow(r, 2) - Math.pow(x2, 2));
         } else {
             let a = 4 * Math.pow(r0, 2);
             let b = -4 * Math.pow(r0, 2) * y0;
             let c = Math.pow(r0, 4) - 4 * Math.pow(r, 2) * Math.pow(x0, 2);
 
-            y1 = (-1 * b + Math.sqrt(b * b - 4 * a * c)) / a / 2;
-            y2 = (-1 * b - Math.sqrt(b * b - 4 * a * c)) / a / 2;
+            if (b >= 0) {
+                y1 = (-1 * b - Math.sqrt(b * b - 4 * a * c)) / a / 2;
+                y2 = 2 * c / (-1 * b - Math.sqrt(b * b - 4 * a * c));
+            } else {
+                y1 = 2 * c / (-1 * b + Math.sqrt(b * b - 4 * a * c));
+                y2 = (-1 * b + Math.sqrt(b * b - 4 * a * c)) / a / 2;
+            }
 
             x1 = (r0 * r0 / 2 - y0 * y1) / x0;
             x2 = (r0 * r0 / 2 - y0 * y2) / x0;
