@@ -306,9 +306,9 @@ class SvgSandPlate extends SandPlate {
         // quick return
         if (x0 == 0 && y0 == 0) {
             if (a0 <= 180) {
-                act1 = rotateArm1((180 - a0) / SandPlate.DEGREES_PER_STEP);
+                act1 = this.rotateArm1((180 - a0) / SandPlate.DEGREES_PER_STEP);
             } else {
-                act1 = rotateArm1((a0 - 180) / SandPlate.DEGREES_PER_STEP. false);
+                act1 = this.rotateArm1((a0 - 180) / SandPlate.DEGREES_PER_STEP. false);
             }
 
             await Promise.all([act1]);
