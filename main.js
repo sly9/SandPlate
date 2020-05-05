@@ -15,6 +15,7 @@ let init = () => {
     document.getElementById('draw4').addEventListener('click', drawSquare);
     document.getElementById('drawCross').addEventListener('click', drawCross);
     document.getElementById('draw5').addEventListener('click', sanityTest);
+    document.getElementById('drawStrange').addEventListener('click', drawStrange);
     window.sandPlate = sandPlate;
 };
 
@@ -130,5 +131,16 @@ let sanityTest = async () => {
     await sandPlate.gotoPos(400, 0);
 }
 
+let drawStrange = async() => {
+    console.log('draw strange graph... terrible name...');
+
+    for (let i = 0; i < 10 ;i++) {
+        await sandPlate.gotoPos(400 - 40 * i, 0);
+        await sandPlate.gotoPos(400 - 40 * i, 40 * i+1);
+        await sandPlate.gotoPos(400 - 40 * i - 20, 40 * i+1);
+        await sandPlate.gotoPos(400 - 40 * i - 20, 0);
+    }
+
+}
 
 document.addEventListener("DOMContentLoaded", init);
