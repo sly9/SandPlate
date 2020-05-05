@@ -400,13 +400,13 @@ class SandPlate {
             nextX = x0 + (curX - x0) * c - (curY - y0) * s;
             nextY = y0 + (curY - y0) * c + (curX - x0) * s;
 
-            gotoPos(nextX, nextY);
+            this.gotoPos(nextX, nextY);
 
             curX = nextX;
             curY = nextY;
         }
 
-        await gotoPos(x, y);
+        await this.gotoPos(x, y);
     }
 }
 
