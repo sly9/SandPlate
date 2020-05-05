@@ -34,7 +34,7 @@ class SvgSandPlate extends SandPlate {
         // 1 round == 3 sec
         // 1 step = 3/1024 * 1000 milli second
         // 3 is good enough and fast
-        return 3 * steps;
+        return 2 * steps;
     }
 
     /**
@@ -174,11 +174,12 @@ class SvgSandPlate extends SandPlate {
         let promise1 = this.rotateArm1(arm1DegreeDelta/ SandPlate.DEGREES_PER_STEP, r1 > this.arm1Rotation_);
 
         await Promise.all([promise0, promise1]);
+        this.drawBigDot(x,y);
 
     }
 
     drawBigDot = (x, y) => {
-    	console.log('draw big dot at' +x+', '+y)
+    	// console.log('draw big dot at' +x+', '+y)
     	let context = this.canvas_.getContext('2d');
         context.beginPath();
 		context.strokeStyle = "#FF0000";
@@ -188,7 +189,7 @@ class SvgSandPlate extends SandPlate {
     }
 
     gotoPos2 = async (x, y) => {
-        let eps = 1.0e-8;
+        let eps = 1.0;
 
         console.log("gotoPos2 " + x + " " + y);
 
@@ -261,7 +262,7 @@ class SvgSandPlate extends SandPlate {
             if (mindist < eps) { break; }
         }
 
-        // console.log("j0 " + j0);
+        console.log("j " + j0 + "  " + j1);
 
         a0 += j0 * SandPlate.DEGREES_PER_STEP;
         a1 += j0 * SandPlate.DEGREES_PER_STEP;
@@ -269,20 +270,94 @@ class SvgSandPlate extends SandPlate {
         // console.log("arg : " + a0 + "  " + a1);
 
         let act0;
-        if (j0 < 512) {
-            act0 = this.rotateArm0(j0, true, false);
+        if (j0 <= 512) {
+            act0 = this.rotateArm0(j0, true);
         } else {
-            act0 = this.rotateArm0(1024 - j0, false, false);
+            act0 = this.rotateArm0(1024 - j0, false);
         }
 
         let act1;
         if (j1 <= 512) {
-            act1 = this.rotateArm1(j1, true, false);
+            act1 = this.rotateArm1(j1, true);
         } else {
-            act1 = this.rotateArm1(1024 - j1, false, false);
+            act1 = this.rotateArm1(1024 - j1, false);
         }
 
         await Promise.all([act0, act1]);
         this.drawBigDot(x,y)
+    }
+
+    gotoPos3 = async (x0, y0) => {
+        console.log("gotoPos3 " + x0 + " " + y0);
+
+        let eps = 1.0e-3;
+
+        // x0 * x + y0 * y = 1/2 * r_0^2
+        // x^2 + y^2 = r^2
+
+        let r = 200;
+        let r0 = Math.sqrt(x0 * x0 + y0 * y0);
+
+        let y1 = ( Math.pow(x0, 2) * y0 * Math.pow(r0, 2) + Math.sqrt( Math.pow(x0, 4) * Math.pow(y0, 2) * Math.pow(r0, 4) - ( Math.pow(x0, 2) * Math.pow(y0, 2) + 1 ) * ( Math.pow(r0, 4) * Math.pow(x0, 2) - 4 * Math.pow(r, 2)) ) ) / 2 / ( Math.pow(x0, 2) * Math.pow(y0, 2) + 1);
+        let y2 = ( Math.pow(x0, 2) * y0 * Math.pow(r0, 2) - Math.sqrt( Math.pow(x0, 4) * Math.pow(y0, 2) * Math.pow(r0, 4) - ( Math.pow(x0, 2) * Math.pow(y0, 2) + 1 ) * ( Math.pow(r0, 4) * Math.pow(x0, 2) - 4 * Math.pow(r, 2)) ) ) / 2 / ( Math.pow(x0, 2) * Math.pow(y0, 2) + 1);
+
+        let x1 = (1 / 2 * Math.pow(r0, 1) - y0 * y1) / x0;
+        let x2 = (1 / 2 * Math.pow(r0, 1) - y0 * y2) / x0;
+
+        let a0 = this.arm0Rotation_;
+        let a1 = this.arm1Rotation_;
+
+        let xcur = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1) * Math.PI / 180);
+        let ycur = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1) * Math.PI / 180);
+
+        let r1 = (xcur - x1) * (xcur - x1) + (ycur - y1) * (ycur - y1);
+        let r2 = (xcur - x2) * (xcur - x2) + (ycur - y2) * (ycur - y2);
+
+        let act0;
+        let act1;
+
+        let xt = (r1 <= r2) ? x1 : x2;
+        let yt = (r1 <= r2) ? y1 : y2;
+
+        let j0 = 0;
+        for (let j = 0; j < 1024; ++j) {
+            xcur = 200 * Math.cos(a0 * Math.PI / 180);
+            ycur = 200 * Math.sin(a0 * Math.PI / 180);
+
+            if ((xcur - x1) * (xcur - x1) + (ycur - y1) * (ycur - y1) < eps) {
+                j0 = j;
+                break;
+            }
+
+            a0 += SandPlate.DEGREES_PER_STEP;
+        }
+
+        if (j0 <= 512) {
+            act0 = this.rotateArm0(j0);
+        } else {
+            act0 = this.rotateArm0(1024 - j0, false);
+        }
+
+        let j1 = 0;
+        for (let j = 0; j < 1024; ++j) {
+            xcur = 200 * Math.cos(a0 * Math.PI / 180) + 200 * Math.cos((a0 + a1) * Math.PI / 180);
+            ycur = 200 * Math.sin(a0 * Math.PI / 180) + 200 * Math.sin((a0 + a1) * Math.PI / 180);
+
+            if ((xcur - x0) * (xcur - x0) + (ycur - y0) * (ycur - y0) < eps) {
+                j1 = j;
+                break;
+            }
+
+            a1 += SandPlate.DEGREES_PER_STEP;
+        }
+
+        if (j1 <= 512) {
+            act1 = this.rotateArm1(j1);
+        } else {
+            act1 = this.rotateArm1(1024 - j1, false);
+        }
+
+        await Promise.all([act0, act1]);
+        this.drawBigDot(x0, y0);
     }
 }

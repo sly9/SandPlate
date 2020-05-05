@@ -71,18 +71,20 @@ let drawNestedSpiral = async () => {
 let drawSquare = async () => {
     console.log('Draw a square');
 
+    // await sandPlate.gotoPos3(390, 10);
+
     while (true) {
         for (let i = 0; i < 100; ++i) {
-            await sandPlate.gotoPos2(400 - i * 4, i * 4);
+            await sandPlate.gotoPos3(400 - i * 4, i * 4);
         }
         for (let i = 0; i < 100; ++i) {
-            await sandPlate.gotoPos2(- i * 4, 400 - i * 4);
+            await sandPlate.gotoPos3(- i * 4, 400 - i * 4);
         }
         for (let i = 0; i < 100; ++i) {
-            await sandPlate.gotoPos2(-400 + i * 4, - i * 4);
+            await sandPlate.gotoPos3(-400 + i * 4, - i * 4);
         }
         for (let i = 0; i < 100; ++i) {
-            await sandPlate.gotoPos2(i * 4, -400 + i * 4);
+            await sandPlate.gotoPos3(i * 4, -400 + i * 4);
         }
     }
 

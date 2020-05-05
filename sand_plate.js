@@ -34,4 +34,6 @@ class SandPlate {
     
     gotoPos2 = async (x, y) => {}
 
+    gotoPos3 = async (x, y) => {}
+
 }
