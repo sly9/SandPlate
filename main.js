@@ -10,7 +10,7 @@ let init = () => {
     document.getElementById('draw2').addEventListener('click', drawGear);
     document.getElementById('draw3').addEventListener('click', drawNestedSpiral);
     document.getElementById('draw4').addEventListener('click', drawSquare);
-
+    document.getElementById('draw5').addEventListener('click', sanityTest);
 
 };
 
@@ -36,7 +36,6 @@ let drawSpiral = async () => {
         }
     }
 };
-
 
 let drawGear = async () => {
     console.log('Draw a gear like spiral');
@@ -67,26 +66,46 @@ let drawNestedSpiral = async () => {
     }
 };
 
-
 let drawSquare = async () => {
     console.log('Draw a square');
 
-    await sandPlate.gotoPos3(0, 0);
+    await sandPlate.gotoPos3(200, 300);
 
-    // for (let i = 0; i < 100; ++i) {
-    //     await sandPlate.gotoPos3(400 - i * 4, i * 4);
-    // }
-    // for (let i = 0; i < 100; ++i) {
-    //     await sandPlate.gotoPos3(- i * 4, 400 - i * 4);
-    // }
-    // for (let i = 0; i < 100; ++i) {
-    //     await sandPlate.gotoPos3(-400 + i * 4, - i * 4);
-    // }
-    // for (let i = 0; i < 100; ++i) {
-    //     await sandPlate.gotoPos3(i * 4, -400 + i * 4);
-    // }
-    
+    for (let i = 0; i < 100; ++i) {
+        await sandPlate.gotoPos3(200 - i * 5, 300 - i);
+    }
+    for (let i = 0; i < 100; ++i) {
+        await sandPlate.gotoPos3(-300 + i, 200 - i * 5);
+    }
+    for (let i = 0; i < 100; ++i) {
+        await sandPlate.gotoPos3(-200 + i * 5, -300 + i);
+    }
+    for (let i = 0; i < 100; ++i) {
+        await sandPlate.gotoPos3(300 - i, -200 + i * 5);
+    }
 };
+
+let sanityTest = async () => {
+    console.log('Sanity test');
+
+    await sandPlate.gotoPos3(400, 0);
+
+    for (let i = 399; i > -400; --i) {
+        await sandPlate.gotoPos3(i, 1);
+        await sandPlate.gotoPos3(i, 0);
+        await sandPlate.gotoPos3(i, -1);
+    }
+
+    await sandPlate.gotoPos3(0, 400);
+
+    for (let i = 399; i > -400; --i) {
+        await sandPlate.gotoPos3(1, i);
+        await sandPlate.gotoPos3(0, i);
+        await sandPlate.gotoPos3(-1, i);
+    }
+
+    await sandPlate.gotoPos3(400, 0);
+}
 
 
 document.addEventListener("DOMContentLoaded", init);
