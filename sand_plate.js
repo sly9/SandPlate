@@ -327,6 +327,7 @@ class SandPlate {
      * @return {Promise<void>}
      */
     lineTo = async (x, y) => {
+        console.log(`Line to {${x}, ${y}}`);
         //naive solution, in 50 steps
         let dX = x - this.currentX;
         let dY = y - this.currentY;

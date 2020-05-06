@@ -134,16 +134,61 @@ let sanityTest = async () => {
     await sandPlate.gotoPos(400, 0);
 }
 
+
 let drawStrange = async () => {
     console.log('draw strange graph... terrible name...');
 
-    for (let i = 0; i < 10; i++) {
-        await sandPlate.lineTo(400 - 40 * i, 0);
-        await sandPlate.lineTo(400 - 40 * i, 40 * i + 1);
-        await sandPlate.lineTo(400 - 40 * i - 20, 40 * i + 1);
-        await sandPlate.lineTo(400 - 40 * i - 20, 0);
-    }
+    let sectionCount = 5;
+    let stepSize = sandPlate.radius / sectionCount / 2;
 
+    let firstAxisValue = 0;
+    let secondAxisValue = 0;
+
+    let getX = (first, second, quadrant) => {
+        switch (quadrant) {
+            case 1:
+                return first;
+            case 2:
+                return -second;
+            case 3:
+                return -first;
+            case 4:
+                return second;
+        }
+    };
+    let getY = (first, second, quadrant) => {
+        switch (quadrant) {
+            case 1:
+                return second;
+            case 2:
+                return first;
+            case 3:
+                return -second;
+            case 4:
+                return -first;
+        }
+
+    };
+    for (let q = 1; q <= 4; q++) {
+        for (let i = 0; i < sectionCount; i++) {
+            firstAxisValue = sandPlate.radius - stepSize * 2 * i, 0
+            secondAxisValue = 0;
+            await sandPlate.lineTo(getX(firstAxisValue, secondAxisValue, q), getY(firstAxisValue, secondAxisValue, q));
+            firstAxisValue = sandPlate.radius - stepSize * 2 * i - stepSize;
+            secondAxisValue = 0;
+            await sandPlate.lineTo(getX(firstAxisValue, secondAxisValue, q), getY(firstAxisValue, secondAxisValue, q));
+
+            firstAxisValue = sandPlate.radius - stepSize * 2 * i - stepSize;
+            secondAxisValue = 2 * stepSize * (i + 1);
+
+
+            await sandPlate.lineTo(getX(firstAxisValue, secondAxisValue, q), getY(firstAxisValue, secondAxisValue, q));
+
+            firstAxisValue = sandPlate.radius - stepSize * 2 * i - stepSize * 2;
+            secondAxisValue = 2 * stepSize * (i + 1);
+            await sandPlate.lineTo(getX(firstAxisValue, secondAxisValue, q), getY(firstAxisValue, secondAxisValue, q));
+        }
+    }
 }
 
 let drawArcs = async () => {
@@ -191,7 +236,7 @@ let drawFun = async () => {
 
 }
 
-let drawFun2 = async() => {
+let drawFun2 = async () => {
     console.log('Fun2');
 
     const n = 8;
