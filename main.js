@@ -138,7 +138,7 @@ let sanityTest = async () => {
 let drawStrange = async () => {
     console.log('draw strange graph... terrible name...');
 
-    let sectionCount = 5;
+    let sectionCount = 10;
     let stepSize = sandPlate.radius / sectionCount / 2;
 
     let firstAxisValue = 0;

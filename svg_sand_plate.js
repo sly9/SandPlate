@@ -178,7 +178,7 @@ class SvgSandPlate extends SandPlate {
         let context = this.canvas_.getContext('2d');
         context.beginPath();
         context.strokeStyle = "#ff0000";
-        context.arc(x + 400, y + 400, 5, 0, 2 * Math.PI, true);
+        context.arc(x + 400, y + 400, 3, 0, 2 * Math.PI, true);
         context.stroke();
         context.strokeStyle = "#000000";
     }

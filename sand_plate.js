@@ -334,7 +334,6 @@ class SandPlate {
 
         // larger difference decides the number of loops.
         let largerDiff = Math.abs(dX) > Math.abs(dY) ? Math.abs(dX) : Math.abs(dY);
-        const maxStepPerLoop = 4;
         let numberOfLoops = largerDiff / 4;
 
         // how many steps should we go
