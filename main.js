@@ -17,6 +17,8 @@ let init = () => {
     document.getElementById('drawStrange').addEventListener('click', drawStrange);
     document.getElementById('drawArcs').addEventListener('click', drawArcs);
     document.getElementById('drawFun').addEventListener('click', drawFun);
+    document.getElementById('drawFun2').addEventListener('click', drawFun2);
+
     window.sandPlate = sandPlate;
 };
 
@@ -153,9 +155,8 @@ let drawArcs = async () => {
         let r1 = Math.random() * 400;
         let rhs = Math.random() > 0.5 ? true : false;
 
-        await sandPlate.arcTo(r * Math.cos(a), r * Math.sin(a), r1, rhs);
+        await sandPlate.minorArcTo(r * Math.cos(a), r * Math.sin(a), r1, rhs);
     }
-
 }
 
 let drawFun = async () => {
@@ -178,16 +179,35 @@ let drawFun = async () => {
             let x1 = i * radius / sectionCount * Math.cos((startingDegree + alpha) * Math.PI / 180);
             let y1 = i * radius / sectionCount * Math.sin((startingDegree + alpha) * Math.PI / 180);
             if (currentlyOnFirstArm) {
-                await sandPlate.arcTo(x1, y1, i * radius / sectionCount * 1, true);
+                await sandPlate.minorArcTo(x1, y1, i * radius / sectionCount * 1, true);
                 currentlyOnFirstArm = false;
             } else {
-                await sandPlate.arcTo(x0, y0, i * radius / sectionCount * 1, false);
+                await sandPlate.minorArcTo(x0, y0, i * radius / sectionCount * 1, false);
                 currentlyOnFirstArm = true;
             }
         }
         startingDegree = startingDegree + alpha;
     }
 
+}
+
+let drawFun2 = async() => {
+    console.log('Fun2');
+
+    const n = 8;
+    const dr = 3;
+    const scale = 0.4;
+
+    let r = 0;
+    let i = 0;
+
+    await sandPlate.gotoPos(0, 0);
+
+    while (r + dr <= 400) {
+        r += dr;
+        i++;
+        await sandPlate.minorArcTo(r * Math.cos(i * 2 * Math.PI / n), r * Math.sin(i * 2 * Math.PI / n), r * scale);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", init);

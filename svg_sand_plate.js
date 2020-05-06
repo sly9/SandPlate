@@ -188,10 +188,11 @@ class SvgSandPlate extends SandPlate {
      * @private
      */
     trig2Angle = (c, s) => {
-        if (s == 0) {
+        const eps = 1e-12;
+        if (Math.abs(s) < eps) {
             return c > 0 ? 0 : 180;
         }
-        if (c == 0) {
+        if (Math.abs(c) < eps) {
             return s > 0 ? 90 : 270;
         }
 

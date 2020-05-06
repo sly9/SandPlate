@@ -171,7 +171,9 @@ class SandPlate {
      * @returns {Promise<void>}
      */
     gotoPos = async (x0, y0) => {
-        console.log(`gotoPos {${x0}, ${y0}}`);
+        const eps = 1e-2;
+
+        // console.log(`gotoPos {${x0}, ${y0}}`);
 
         let r = this.armLength;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
@@ -201,7 +203,7 @@ class SandPlate {
         let a0 = this.arm0Rotation;
         let a1 = this.arm1Rotation;
 
-        if (x0 == 0 && y0 == 0) {
+        if (Math.abs(x0) < eps && Math.abs(y0) < eps) {
             /**
              * When target is x0 = y0 = 0, simply move arm1Rotation to 180 and
              * no need to move Arm0.
@@ -212,19 +214,19 @@ class SandPlate {
                 act1 = this.rotateArm1((a1 - 180) / SandPlate.DEGREES_PER_STEP, false);
             }
 
-            console.log('steps ' + 0 + ' ' + Math.floor(Math.abs((180 - a1) / SandPlate.DEGREES_PER_STEP)));
+            // console.log('steps ' + 0 + ' ' + Math.floor(Math.abs((180 - a1) / SandPlate.DEGREES_PER_STEP)));
 
             await Promise.all([act1]);
             this.drawBigDot(x0, y0);
 
             return;
-        } else if (x0 == 0) {
+        } else if (Math.abs(x0) < eps) {
             y1 = r0 * r0 / 2 / y0;
             y2 = y1;
 
             x1 = Math.sqrt(Math.pow(r, 2) - Math.pow(y1, 2));
             x2 = -1 * Math.sqrt(Math.pow(r, 2) - Math.pow(y2, 2));
-        } else if (y0 == 0) {
+        } else if (Math.abs(y0) < eps) {
             x1 = r0 * r0 / 2 / x0;
             x2 = x1;
 
@@ -292,7 +294,7 @@ class SandPlate {
 
         let j1 = Math.floor(delta / SandPlate.DEGREES_PER_STEP);
 
-        console.log('steps ' + j0 + ' ' + j1);
+        // console.log('steps ' + j0 + ' ' + j1);
 
         /**
          * Rotate Arm0 and Arm1 clockwise by j0 and j1 steps synchronously
@@ -315,7 +317,7 @@ class SandPlate {
         }
         await this.rotateBothArms(arm0Steps, arm0Clockwise, arm1Steps, arm1Clockwise, true);
 
-        this.drawBigDot(x0, y0);
+        this.drawBigDot(this.currentX, this.currentY);
     }
 
     /**
@@ -350,16 +352,14 @@ class SandPlate {
     }
 
     /**
-     * Draw an arc from current position to (x, y) with radius r
+     * Draw a minor arc from current position to (x, y) with radius r
      * @param x
      * @param y
      * @param radius Radius of the arc.
      * @param rightHandSide Decides which side is the arc relative to the vector (current position) --> (x0, y0).
      * @return {Promise<void>}
      */
-    arcTo = async (x, y, radius, rightHandSide = true) => {
-        console.log(`arcTo (${x}, ${y}) with radius ${radius}`);
-
+    minorArcTo = async (x, y, radius, rightHandSide = true) => {
         let curX = this.currentX;
         let curY = this.currentY;
 
@@ -373,8 +373,8 @@ class SandPlate {
 
         // find center of the arc
         let t = Math.sqrt(radius * radius / dist / dist - 0.25);
-        let x0 = rightHandSide ? (curX + x) / 2 + (y - curY) * t : (curX + x) / 2 - (y - curY) * t;
-        let y0 = rightHandSide ? (curY + y) / 2 - (x - curX) * t : (curY + y) / 2 + (x - curX) * t;
+        let x0 = rightHandSide ? (curX + x) / 2 - (y - curY) * t : (curX + x) / 2 + (y - curY) * t;
+        let y0 = rightHandSide ? (curY + y) / 2 + (x - curX) * t : (curY + y) / 2 - (x - curX) * t;
 
         // v0 * exp(i * theta) = v1
         // v0 = (curX - x0, curY - y0) & v1 = (x - x0, y - y0)
@@ -386,10 +386,8 @@ class SandPlate {
         let c = (v10 * v00 + v11 * v01) / (v00 * v00 + v01 * v01);
         let s = (v11 * v00 - v10 * v01) / (v00 * v00 + v01 * v01);
 
-        let theta = this.trig2Angle(c, s);
-        if (!rightHandSide) theta -= 360;
-
-        console.log('theta ' + theta);
+        let theta = rightHandSide ? Math.acos(c) : -1 * Math.acos(c);
+        theta *= 180 / Math.PI;
 
         const maxStepLength = 4;
         let steps = Math.ceil(radius * Math.abs(theta) * Math.PI / 180 / maxStepLength);
