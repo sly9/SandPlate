@@ -172,6 +172,7 @@ class SandPlate {
      */
     gotoPos = async (x0, y0) => {
         const eps = 1e-2;
+        const maxStepLength = 10;
 
         // console.log(`gotoPos {${x0}, ${y0}}`);
 
@@ -184,6 +185,11 @@ class SandPlate {
             y0 = y0 * this.radius / r0;
             r0 = this.radius;
             console.warn(`Going to nearest possible {${x0.toFixed(2)}, ${y0.toFixed(2)}} instead!`);
+        }
+
+        let dist = Math.sqrt((this.currentX - x0) * (this.currentX - x0) + (this.currentY - y0) * (this.currentY - y0));
+        if (dist >= maxStepLength) {
+            console.warn(`Moving distance ${dist} is too large.`);
         }
 
         /**
