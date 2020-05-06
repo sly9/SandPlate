@@ -1,5 +1,4 @@
 import {SvgSandPlate} from './svg_sand_plate.js'
-import {Driver} from "./Driver.js";
 
 let init = () => {
     console.log('Initializing...');
@@ -17,6 +16,7 @@ let init = () => {
     document.getElementById('draw5').addEventListener('click', sanityTest);
     document.getElementById('drawStrange').addEventListener('click', drawStrange);
     document.getElementById('drawArcs').addEventListener('click', drawArcs);
+    document.getElementById('drawFun').addEventListener('click', drawFun);
     window.sandPlate = sandPlate;
 };
 
@@ -132,19 +132,19 @@ let sanityTest = async () => {
     await sandPlate.gotoPos(400, 0);
 }
 
-let drawStrange = async() => {
+let drawStrange = async () => {
     console.log('draw strange graph... terrible name...');
 
-    for (let i = 0; i < 10 ;i++) {
+    for (let i = 0; i < 10; i++) {
         await sandPlate.lineTo(400 - 40 * i, 0);
-        await sandPlate.lineTo(400 - 40 * i, 40 * i+1);
-        await sandPlate.lineTo(400 - 40 * i - 20, 40 * i+1);
+        await sandPlate.lineTo(400 - 40 * i, 40 * i + 1);
+        await sandPlate.lineTo(400 - 40 * i - 20, 40 * i + 1);
         await sandPlate.lineTo(400 - 40 * i - 20, 0);
     }
 
 }
 
-let drawArcs = async() => {
+let drawArcs = async () => {
     console.log('Draw arcs');
 
     for (let i = 0; i < 10; ++i) {
@@ -154,6 +154,38 @@ let drawArcs = async() => {
         let rhs = Math.random() > 0.5 ? true : false;
 
         await sandPlate.arcTo(r * Math.cos(a), r * Math.sin(a), r1, rhs);
+    }
+
+}
+
+let drawFun = async () => {
+    console.log('Draw fun stuff');
+
+    const alpha = 30;
+    const sectionCount = 20;
+    // First row
+    await sandPlate.gotoPos(0, 0);
+
+    let radius = sandPlate.radius;
+    let startingDegree = 0;
+    let row0 = [[0, 0]];
+    let row1 = [[0, 0]];
+    let currentlyOnFirstArm = true;
+    for (let j = 0; j < 360 / 30; j++) {
+        for (let i = 0; i < sectionCount; i++) {
+            let x0 = i * radius / sectionCount * Math.cos(startingDegree * Math.PI / 180);
+            let y0 = i * radius / sectionCount * Math.sin(startingDegree * Math.PI / 180);
+            let x1 = i * radius / sectionCount * Math.cos((startingDegree + alpha) * Math.PI / 180);
+            let y1 = i * radius / sectionCount * Math.sin((startingDegree + alpha) * Math.PI / 180);
+            if (currentlyOnFirstArm) {
+                await sandPlate.arcTo(x1, y1, i * radius / sectionCount * 1, true);
+                currentlyOnFirstArm = false;
+            } else {
+                await sandPlate.arcTo(x0, y0, i * radius / sectionCount * 1, false);
+                currentlyOnFirstArm = true;
+            }
+        }
+        startingDegree = startingDegree + alpha;
     }
 
 }
