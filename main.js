@@ -194,14 +194,13 @@ let drawStrange = async () => {
 let drawArcs = async () => {
     console.log('Draw arcs');
 
-    for (let i = 0; i < 10; ++i) {
-        let a = Math.random() * Math.PI * 2;
-        let r = Math.random() * 400;
-        let r1 = Math.random() * 400;
-        let rhs = Math.random() > 0.5 ? true : false;
+    await sandPlate.gotoPos(100, -100);
 
-        await sandPlate.minorArcTo(r * Math.cos(a), r * Math.sin(a), r1, rhs);
-    }
+    await sandPlate.arcTo(-100, 100, 200, false);
+    await sandPlate.arcTo(100, -100, 200, false);
+
+    await sandPlate.arcTo(-100, 100, 200, false, false);
+    await sandPlate.arcTo(100, -100, 200, false, false);
 }
 
 let drawFun = async () => {
@@ -224,10 +223,10 @@ let drawFun = async () => {
             let x1 = i * radius / sectionCount * Math.cos((startingDegree + alpha) * Math.PI / 180);
             let y1 = i * radius / sectionCount * Math.sin((startingDegree + alpha) * Math.PI / 180);
             if (currentlyOnFirstArm) {
-                await sandPlate.minorArcTo(x1, y1, i * radius / sectionCount * 1, true);
+                await sandPlate.arcTo(x1, y1, i * radius / sectionCount * 1, true);
                 currentlyOnFirstArm = false;
             } else {
-                await sandPlate.minorArcTo(x0, y0, i * radius / sectionCount * 1, false);
+                await sandPlate.arcTo(x0, y0, i * radius / sectionCount * 1, false);
                 currentlyOnFirstArm = true;
             }
         }
@@ -251,7 +250,7 @@ let drawFun2 = async () => {
     while (r + dr <= 400) {
         r += dr;
         i++;
-        await sandPlate.minorArcTo(r * Math.cos(i * 2 * Math.PI / n), r * Math.sin(i * 2 * Math.PI / n), r * scale);
+        await sandPlate.arcTo(r * Math.cos(i * 2 * Math.PI / n), r * Math.sin(i * 2 * Math.PI / n), r * scale);
     }
 }
 

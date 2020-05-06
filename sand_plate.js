@@ -352,14 +352,15 @@ class SandPlate {
     }
 
     /**
-     * Draw a minor arc from current position to (x, y) with radius r
+     * Draw an arc from current position to (x, y) with radius r
      * @param x
      * @param y
      * @param radius Radius of the arc.
      * @param rightHandSide Decides which side is the arc relative to the vector (current position) --> (x0, y0).
+     * @param drawMinorArc
      * @return {Promise<void>}
      */
-    minorArcTo = async (x, y, radius, rightHandSide = true) => {
+    arcTo = async (x, y, radius, rightHandSide = true, drawMinorArc = true) => {
         let curX = this.currentX;
         let curY = this.currentY;
 
@@ -373,8 +374,8 @@ class SandPlate {
 
         // find center of the arc
         let t = Math.sqrt(radius * radius / dist / dist - 0.25);
-        let x0 = rightHandSide ? (curX + x) / 2 - (y - curY) * t : (curX + x) / 2 + (y - curY) * t;
-        let y0 = rightHandSide ? (curY + y) / 2 + (x - curX) * t : (curY + y) / 2 - (x - curX) * t;
+        let x0 = rightHandSide == drawMinorArc ? (curX + x) / 2 - (y - curY) * t : (curX + x) / 2 + (y - curY) * t;
+        let y0 = rightHandSide == drawMinorArc ? (curY + y) / 2 + (x - curX) * t : (curY + y) / 2 - (x - curX) * t;
 
         // v0 * exp(i * theta) = v1
         // v0 = (curX - x0, curY - y0) & v1 = (x - x0, y - y0)
@@ -388,6 +389,10 @@ class SandPlate {
 
         let theta = rightHandSide ? Math.acos(c) : -1 * Math.acos(c);
         theta *= 180 / Math.PI;
+
+        if (!drawMinorArc) {
+            theta  = rightHandSide ? 360 - theta : -360 - theta;
+        }
 
         const maxStepLength = 4;
         let steps = Math.ceil(radius * Math.abs(theta) * Math.PI / 180 / maxStepLength);
