@@ -22,9 +22,8 @@
     <list default="true" id="4270d844-a61a-46d2-a7bc-025a3853ef43" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Driver.js" beforeDir="false" afterPath="$PROJECT_DIR$/Driver.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sand_plate.js" beforeDir="false" afterPath="$PROJECT_DIR$/sand_plate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/svg_sand_plate.js" beforeDir="false" afterPath="$PROJECT_DIR$/svg_sand_plate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plan.js" beforeDir="false" afterPath="$PROJECT_DIR$/Plan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +65,7 @@
       <workItem from="1588562416955" duration="933000" />
       <workItem from="1588644245063" duration="6000000" />
       <workItem from="1588696419041" duration="8380000" />
-      <workItem from="1588723826251" duration="15330000" />
+      <workItem from="1588723826251" duration="18360000" />
     </task>
     <servers />
   </component>
@@ -94,5 +93,9 @@
       <screen x="0" y="0" width="2752" height="1112" />
     </state>
     <state x="1427" y="289" width="579" height="534" key="find.popup/0.0.2752.1112@0.0.2752.1112" timestamp="1588808715840" />
+    <state x="1382" y="247" width="672" height="678" key="search.everywhere.popup" timestamp="1588816726949">
+      <screen x="0" y="0" width="2752" height="1112" />
+    </state>
+    <state x="1382" y="247" width="672" height="678" key="search.everywhere.popup/0.0.2752.1112@0.0.2752.1112" timestamp="1588816726949" />
   </component>
 </project>

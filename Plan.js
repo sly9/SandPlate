@@ -9,6 +9,8 @@ const InstructionType = Object.freeze({
     LOOP_START: Symbol.for('loopStart'),
     LOOP_END: Symbol.for('loopEnd'),
     LOOP: Symbol.for('loop'),
+    SLEEP:Symbol.for('sleep'),
+    LET:Symbol.for('let'),
 });
 
 class Instruction {
@@ -60,11 +62,41 @@ class Plan {
      * @param planJson
      */
     parseJson(planJson = []) {
-        for (let i = 0; i < planJson.length; i++) {
-            let instruction = new Instruction(planJson[i]);
-            this.instructions.push(instruction);
+        try {
+            let [i, instructions] = this.parseJson_(planJson);
+            this.instructions = instructions;
+        } catch (e) {
+            alert('Parsing plan failed..');
+            debugger
         }
     }
+
+    /**
+     *
+     * @param planJson
+     * @param startIndex
+     * @private
+     */
+    parseJson_(planJson = [], startIndex = 0) {
+        let instructions = []
+        for (let i = startIndex; i < planJson.length; i++) {
+            let instruction = new Instruction(planJson[i]);
+            if (instruction.type == InstructionType.LOOP_END) {
+                //happy! found a matching end.
+                return [i, instructions];
+            } else if (instruction.type == InstructionType.LOOP_START) {
+                let [nextInstructionIndex, childrenInstructions] = this.parseJson_(planJson, i + 1);
+                instruction.childrenInstruction = childrenInstructions;
+                i = nextInstructionIndex;
+                instruction.type = InstructionType.LOOP;
+                instructions.push(instruction);
+            } else {
+                instructions.push(instruction);
+            }
+        }
+        return [-1, instructions];
+    }
+
 }
 
-export {Instruction, InstructionType, Plan}
+export {InstructionType, Instruction, Plan}

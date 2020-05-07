@@ -44,7 +44,17 @@
     <button id="drawFun2">Fun2</button>
 </div>
 <div>
-    <textarea id="instructionTextarea">[["line",200,200],["park"]]</textarea>
+    <textarea id="instructionTextarea">
+        let,a,10
+        sleep, 1000
+        line,200,200
+        park
+        goto, 400, 0
+        loopStart, 20
+        rotateArm0, 10*i0
+        rotateArm1, 30
+        loopEnd
+    </textarea>
     <button id="runInstructions">Run instructions above</button>
 </div>
 </body>
