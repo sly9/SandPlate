@@ -199,7 +199,7 @@ class SandPlate {
      */
     async gotoPos(x0, y0) {
         const eps = 1e-2;
-        const maxStepLength = 10;
+        const gotoMaxStepLength = 10;
 
         // console.log(`gotoPos {${x0}, ${y0}}`);
 
@@ -215,7 +215,7 @@ class SandPlate {
         }
 
         let dist = Math.sqrt((this.currentX - x0) * (this.currentX - x0) + (this.currentY - y0) * (this.currentY - y0));
-        if (dist >= maxStepLength) {
+        if (dist >= gotoMaxStepLength) {
             console.warn(`Moving distance ${dist} is too large.`);
         }
 
@@ -360,28 +360,26 @@ class SandPlate {
      * @return {Promise<void>}
      */
     async lineTo(x, y) {
+        const lineToMaxStepLength = 2;
+
         console.log(`Line to {${x}, ${y}}`);
-        //naive solution, in 50 steps
-        let dX = x - this.currentX;
-        let dY = y - this.currentY;
 
-        // larger difference decides the number of loops.
-        let largerDiff = Math.abs(dX) > Math.abs(dY) ? Math.abs(dX) : Math.abs(dY);
-        let numberOfLoops = largerDiff / 4;
-
-        // how many steps should we go
         let startX = this.currentX;
         let startY = this.currentY;
 
-        let xStepSize = dX / numberOfLoops;
-        let yStepSize = dY / numberOfLoops;
-        for (let i = 1; i <= numberOfLoops; i++) {
+        let dX = x - startX;
+        let dY = y - startY;
+
+        let steps = Math.ceil(Math.sqrt(dX * dX + dY * dY) / lineToMaxStepLength);
+
+        let xStepSize = dX / steps;
+        let yStepSize = dY / steps;
+
+        for (let i = 1; i < steps; i++) {
             await this.gotoPos(i * xStepSize + startX, i * yStepSize + startY);
         }
-        if (Math.abs(dX) < 4 && Math.abs(dY) < 4) {
-            // close enough, just go.
-            await this.gotoPos(x, y);
-        }
+
+        await this.gotoPos(x, y);
     }
 
     /**
@@ -394,6 +392,10 @@ class SandPlate {
      * @return {Promise<void>}
      */
     async arcTo(x, y, radius, rightHandSide = true, drawMinorArc = true) {
+        const arcToMaxStepLength = 2;
+
+        console.log(`Arc to {${x}, ${y}}`);
+
         let curX = this.currentX;
         let curY = this.currentY;
 
@@ -427,8 +429,7 @@ class SandPlate {
             theta = rightHandSide ? 360 - theta : -360 - theta;
         }
 
-        const maxStepLength = 4;
-        let steps = Math.ceil(radius * Math.abs(theta) * Math.PI / 180 / maxStepLength);
+        let steps = Math.ceil(radius * Math.abs(theta) * Math.PI / 180 / arcToMaxStepLength);
 
         c = Math.cos(theta / steps * Math.PI / 180);
         s = Math.sin(theta / steps * Math.PI / 180);
