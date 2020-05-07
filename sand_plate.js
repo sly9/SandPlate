@@ -120,7 +120,7 @@ class SandPlate {
      * @param steps
      * @returns {number}
      */
-    static timeNeededForSteps = (steps) => {
+    static timeNeededForSteps (steps) {
         // 1024 step == 1 round
         // 1 round == 3 sec
         // 1 step = 3/1024 * 1000 milli second
@@ -186,7 +186,7 @@ class SandPlate {
     }
 
     // Draw a dot, noop for SVG
-    drawBigDot = (x, y) => {
+    drawBigDot (x, y) {
 
     }
 
