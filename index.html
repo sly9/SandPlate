@@ -17,7 +17,14 @@
             width: 800px;
             height: 800px;
             position: absolute;
-        }    </style>
+        }
+        #instructionTextarea {
+            width: 800px;
+            height: 300px;
+            display: block;
+            margin: 10px;
+        }
+    </style>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="module" src="main.js"></script>
 </head>
@@ -35,6 +42,10 @@
     <button id="drawArcs">Arcs</button>
     <button id="drawFun">Fun</button>
     <button id="drawFun2">Fun2</button>
+</div>
+<div>
+    <textarea id="instructionTextarea">[["line",200,200],["park"]]</textarea>
+    <button id="runInstructions">Run instructions above</button>
 </div>
 </body>
 </html>

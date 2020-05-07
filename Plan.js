@@ -8,6 +8,7 @@ const InstructionType = Object.freeze({
     ROTATE_BOTH_ARMS: Symbol.for('rotateBothArms'),
     LOOP_START: Symbol.for('loopStart'),
     LOOP_END: Symbol.for('loopEnd'),
+    LOOP: Symbol.for('loop'),
 });
 
 class Instruction {
@@ -31,6 +32,7 @@ class Instruction {
 
         this.arguments = instructionJson.slice(1);
 
+        // All instructions within this for loop.
         this.childrenInstruction = [];
     }
 

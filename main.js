@@ -19,9 +19,11 @@ let init = () => {
     document.getElementById('drawArcs').addEventListener('click', drawArcs);
     document.getElementById('drawFun').addEventListener('click', drawFun);
     document.getElementById('drawFun2').addEventListener('click', drawFun2);
+    document.getElementById('runInstructions').addEventListener('click', runInstructions);
 
     window.sandPlate = sandPlate;
-    window.driver = new Driver(sandPlate);
+    driver = new Driver(sandPlate);
+    window.driver = driver;
 };
 
 const CANVAS_WIDTH = 800;
@@ -33,6 +35,12 @@ const RADIUS = 400;
  * @type {SandPlate}
  */
 let sandPlate = null;
+
+/**
+ *
+ * @type {Driver}
+ */
+let driver = null;
 
 let drawSpiral = async () => {
     console.log('Draw a spiral');
@@ -252,6 +260,13 @@ let drawFun2 = async () => {
         i++;
         await sandPlate.arcTo(r * Math.cos(i * 2 * Math.PI / n), r * Math.sin(i * 2 * Math.PI / n), r * scale);
     }
+}
+
+let runInstructions = async () => {
+    console.log('Run instructions!');
+    let instructionStrings = document.getElementById('instructionTextarea').value;
+    driver.loadFromString(instructionStrings);
+    await driver.execute();
 }
 
 document.addEventListener("DOMContentLoaded", init);
