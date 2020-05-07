@@ -74,25 +74,25 @@ class Driver {
                 await this.sleep_(resolvedArguments[0])
                 break;
             case InstructionType.LINE:
-                await sandPlate.lineTo.apply(sandPlate, resolvedArguments);
+                await this.plate_.lineTo.apply(this.plate_, resolvedArguments);
                 break;
             case InstructionType.PARK:
-                await sandPlate.park();
+                await this.plate_.park();
                 break;
             case InstructionType.GOTO:
-                await sandPlate.gotoPos.apply(sandPlate, resolvedArguments);
+                await this.plate_.gotoPos.apply(this.plate_, resolvedArguments);
                 break;
             case InstructionType.ARC:
-                await sandPlate.arcTo.apply(sandPlate, resolvedArguments);
+                await this.plate_.arcTo.apply(this.plate_, resolvedArguments);
                 break;
             case InstructionType.ROTATE_ARM0:
-                await sandPlate.rotateArm0.apply(sandPlate, resolvedArguments);
+                await this.plate_.rotateArm0.apply(this.plate_, resolvedArguments);
                 break;
             case InstructionType.ROTATE_ARM1:
-                await sandPlate.rotateArm1.apply(sandPlate, resolvedArguments);
+                await this.plate_.rotateArm1.apply(this.plate_, resolvedArguments);
                 break;
             case InstructionType.ROTATE_BOTH_ARMS:
-                await sandPlate.rotateBothArms().apply(sandPlate, resolvedArguments);
+                await this.plate_.rotateBothArms().apply(this.plate_, resolvedArguments);
                 break;
             case InstructionType.LOOP: {
                 let loopCount = parseInt(resolvedArguments[0]);

@@ -71,7 +71,7 @@
 <div>
     <label class="mdc-text-field mdc-text-field--textarea" id="instructionTextareaWrapper">
   <textarea class="mdc-text-field__input" aria-labelledby="my-label-id" rows="8"
-            cols="80" maxlength="140">let,a,10
+            cols="80" maxlength="100000">let,a,10
 sleep, 1000
 line,200,200
 park
@@ -82,7 +82,18 @@ loopStart, 5
 rotateArm1, 20*i1, i1%2 == 0 ? true:false
 sleep,5
 loopEnd
-loopEnd</textarea>
+loopEnd
+  goto,400,0
+
+let, sectionCount ,10
+let, stepSize, 20
+loopStart,10
+line,400-stepSize*2*i0,0
+line,400-stepSize*2*i0-stepSize,0
+line,400-stepSize*2*i0-stepSize,2*stepSize*(i0+1)
+line,400-stepSize*2*i0-stepSize*2,2*stepSize*(i0+1)
+loopEnd
+</textarea>
         <span class="mdc-notched-outline">
     <span class="mdc-notched-outline__leading"></span>
     <span class="mdc-notched-outline__notch">

@@ -23,7 +23,7 @@ let init = () => {
     window.sandPlate = sandPlate;
     driver = new Driver(sandPlate);
     window.driver = driver;
-    window.textarea=mdc.textField.MDCTextField.attachTo(document.querySelector('#instructionTextareaWrapper'));
+    instructionTextArea = mdc.textField.MDCTextField.attachTo(document.querySelector('#instructionTextareaWrapper'));
     let buttons = document.querySelectorAll('.mdc-button--raised');
     for (let i = 0; i < buttons.length; i++) {
         new mdc.ripple.MDCRipple(buttons[i]);
@@ -47,6 +47,8 @@ let sandPlate = null;
  * @type {Driver}
  */
 let driver = null;
+
+let instructionTextArea = null;
 
 let drawSpiral = async () => {
     console.log('Draw a spiral');
@@ -187,7 +189,7 @@ let drawStrange = async () => {
     };
     for (let q = 1; q <= 4; q++) {
         for (let i = 0; i < sectionCount; i++) {
-            firstAxisValue = sandPlate.radius - stepSize * 2 * i, 0;
+            firstAxisValue = sandPlate.radius - stepSize * 2 * i;
             secondAxisValue = 0;
             await sandPlate.lineTo(getX(firstAxisValue, secondAxisValue, q), getY(firstAxisValue, secondAxisValue, q));
 
@@ -269,7 +271,7 @@ let drawFun2 = async () => {
 
 let runInstructions = async () => {
     console.log('Run instructions!');
-    let instructionStrings = document.getElementById('instructionTextarea').value;
+    let instructionStrings = instructionTextArea.value;
     driver.loadFromString(instructionStrings);
     await driver.execute();
 }
