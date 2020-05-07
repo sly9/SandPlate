@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Sand Sara</title>
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <!-- Required Material Web JavaScript library -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <!-- Instantiate single textfield component rendered in the document -->
     <style>
         #canvas {
             border: 4px dotted darkgray;
@@ -23,43 +27,91 @@
             width: 800px;
             height: 300px;
             display: block;
-            margin: 10px;
+        }
+        #instructionTextareaWrapper {
+            margin: 20px 0;
         }
     </style>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="module" src="main.js"></script>
 </head>
 <body>
-<svg id="svg"></svg>
+<svg id="svg" class="mdc-elevation--z10"></svg>
 <canvas id="canvas" height="800" width="800"></canvas>
 <div>
-    <button id="draw1">Draw Spiral</button>
-    <button id="draw2">Draw Gear</button>
-    <button id="draw3">Draw Nested Spiral</button>
-    <button id="draw4">Draw Square</button>
-    <button id="drawCross">Draw Cross</button>
-    <button id="draw5">Sanity Test</button>
-    <button id="drawStrange">Strange</button>
-    <button id="drawArcs">Arcs</button>
-    <button id="drawFun">Fun</button>
-    <button id="drawFun2">Fun2</button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="draw1">
+        <span class="mdc-button__label">Spiral</span>
+    </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="draw3">
+        <span class="mdc-button__label">Nested spiral</span>
+    </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="draw4">
+        <span class="mdc-button__label">Square</span>
+    </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="drawTiltedSquare">
+        <span class="mdc-button__label">Tilted Square</span>
+    </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="draw5">
+        <span class="mdc-button__label">Sanity Test</span>
+    </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="drawStrange">
+        <span class="mdc-button__label">Strange</span>
+    </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="drawArcs">
+        <span class="mdc-button__label">Arcs</span>
+    </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="drawFun">
+        <span class="mdc-button__label">Fun 1</span>
+    </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="drawFun2">
+        <span class="mdc-button__label">Fun 2</span>
+    </button>
+
 </div>
 <div>
-    <textarea id="instructionTextarea">
-        let,a,10
-        sleep, 1000
-        line,200,200
-        park
-        goto, 400, 0
-        loopStart, 8
-        rotateArm0, 10*i0
-        loopStart, 5
-        rotateArm1, 20*i1, i1%2 == 0 ? true:false
-        sleep,5
-        loopEnd
-        loopEnd
-    </textarea>
-    <button id="runInstructions">Run instructions above</button>
+    <label class="mdc-text-field mdc-text-field--textarea" id="instructionTextareaWrapper">
+  <textarea class="mdc-text-field__input" aria-labelledby="my-label-id" rows="8"
+            cols="80" maxlength="140">let,a,10
+sleep, 1000
+line,200,200
+park
+goto, 400, 0
+loopStart, 8
+rotateArm0, 10*i0
+loopStart, 5
+rotateArm1, 20*i1, i1%2 == 0 ? true:false
+sleep,5
+loopEnd
+loopEnd</textarea>
+        <span class="mdc-notched-outline">
+    <span class="mdc-notched-outline__leading"></span>
+    <span class="mdc-notched-outline__notch">
+      <span class="mdc-floating-label" id="my-label-id">Textarea Label</span>
+    </span>
+    <span class="mdc-notched-outline__trailing"></span>
+  </span>
+    </label>
+    <div class="mdc-text-field-helper-line">
+        <div class="mdc-text-field-character-counter">0 / 140</div>
+    </div>
+
+    <div>
+
+        <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="runInstructions">
+            <span class="mdc-button__label">Run instructions above</span>
+        </button>
+    </div>
+</div>
+<div>
+    <div>Drawing tools</div>
+    <div id="CurrentTools">
+        <!-- Render textfield component -->
+        <label class="mdc-text-field">
+            <input type="text" class="mdc-text-field__input" aria-labelledby="my-label">
+            <span class="mdc-floating-label" id="my-label">Label</span>
+            <div class="mdc-line-ripple"></div>
+        </label>
+    </div>
 </div>
 </body>
 </html>

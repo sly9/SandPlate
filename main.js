@@ -10,10 +10,9 @@ let init = () => {
 
     sandPlate = new SvgSandPlate(canvas, svgCanvas, RADIUS);
     document.getElementById('draw1').addEventListener('click', drawSpiral);
-    document.getElementById('draw2').addEventListener('click', drawGear);
     document.getElementById('draw3').addEventListener('click', drawNestedSpiral);
     document.getElementById('draw4').addEventListener('click', drawSquare);
-    document.getElementById('drawCross').addEventListener('click', drawCross);
+    document.getElementById('drawTiltedSquare').addEventListener('click', drawTiltedSquare);
     document.getElementById('draw5').addEventListener('click', sanityTest);
     document.getElementById('drawStrange').addEventListener('click', drawStrange);
     document.getElementById('drawArcs').addEventListener('click', drawArcs);
@@ -24,6 +23,13 @@ let init = () => {
     window.sandPlate = sandPlate;
     driver = new Driver(sandPlate);
     window.driver = driver;
+    window.textarea=mdc.textField.MDCTextField.attachTo(document.querySelector('#instructionTextareaWrapper'));
+    let buttons = document.querySelectorAll('.mdc-button--raised');
+    for (let i = 0; i < buttons.length; i++) {
+        new mdc.ripple.MDCRipple(buttons[i]);
+    }
+
+
 };
 
 const CANVAS_WIDTH = 800;
@@ -102,8 +108,8 @@ let drawSquare = async () => {
     }
 };
 
-let drawCross = async () => {
-    console.log('Draw a square');
+let drawTiltedSquare = async () => {
+    console.log('Draw a tilted square');
 
     await sandPlate.gotoPos(200, 300);
 
