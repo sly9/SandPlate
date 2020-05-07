@@ -53,8 +53,6 @@ class Plan {
          * @public
          */
         this.instructions = [];
-
-
     }
 
     /**

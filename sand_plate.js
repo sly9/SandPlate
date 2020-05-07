@@ -129,7 +129,8 @@ class SandPlate {
     }
 
     async park() {
-        await this.gotoPos(0, 0);
+        await this.rotateBothArms(this.arm0Rotation / SandPlate.DEGREES_PER_STEP, false,
+            (this.arm1Rotation + 180)/ SandPlate.DEGREES_PER_STEP, false);
     }
 
     /**
