@@ -1,4 +1,5 @@
 import {SvgSandPlate} from './svg_sand_plate.js'
+import {Driver} from "./Driver.js";
 
 let init = () => {
     console.log('Initializing...');
@@ -20,6 +21,7 @@ let init = () => {
     document.getElementById('drawFun2').addEventListener('click', drawFun2);
 
     window.sandPlate = sandPlate;
+    window.driver = new Driver(sandPlate);
 };
 
 const CANVAS_WIDTH = 800;
@@ -214,8 +216,6 @@ let drawFun = async () => {
 
     let radius = sandPlate.radius;
     let startingDegree = 0;
-    let row0 = [[0, 0]];
-    let row1 = [[0, 0]];
     let currentlyOnFirstArm = true;
     for (let j = 0; j < 360 / 30; j++) {
         for (let i = 0; i < sectionCount; i++) {
@@ -256,3 +256,4 @@ let drawFun2 = async () => {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+

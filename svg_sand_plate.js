@@ -82,10 +82,8 @@ class SvgSandPlate extends SandPlate {
      * @param drawDotAfterRotation
      * @returns {Promise<void>}
      */
-    rotateArm0 = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
-        if (steps < 0) {
-            console.warn('Why on earth would you move negative steps? Change your direction!');
-        }
+    async rotateArm0(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
+        await super.rotateArm0(steps, clockwise, drawDotAfterRotation);
 
         let timeSlept = 0;
         while (steps > 0) {
@@ -106,19 +104,16 @@ class SvgSandPlate extends SandPlate {
      * @return {Promise<void>}
      * @private
      */
-    rotateArm0_ = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
+    async rotateArm0_(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
         this.arm0Rotation += SandPlate.DEGREES_PER_STEP * steps * (clockwise ? 1 : -1);
         await this.sleep_(SandPlate.timeNeededForSteps(steps) + extraSleepTime)
         this.arm0_.attr('transform', 'rotate(' + this.arm0Rotation + ',400,400)');
-        if (drawDotAfterRotation) this.drawDot_();
+        if (drawDotAfterRotation) this.drawThinLineToCurrentLocation_();
     }
 
 
-    rotateArm1 = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
-        if (steps < 0) {
-            console.warn('Why on earth would you move negative steps? Change your direction!');
-        }
-
+    async rotateArm1(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
+        await super.rotateArm1(steps, clockwise, drawDotAfterRotation);
         let timeSlept = 0;
         while (steps > 0) {
             steps = steps - 1;
@@ -138,18 +133,18 @@ class SvgSandPlate extends SandPlate {
      * @return {Promise<void>}
      * @private
      */
-    rotateArm1_ = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
+    async rotateArm1_(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
         this.arm1Rotation += SandPlate.DEGREES_PER_STEP * steps * (clockwise ? 1 : -1);
         await this.sleep_(SandPlate.timeNeededForSteps(steps) + extraSleepTime)
         this.arm1_.attr('transform', 'rotate(' + this.arm1Rotation + ',600,400)');
-        if (drawDotAfterRotation) this.drawDot_();
+        if (drawDotAfterRotation) this.drawThinLineToCurrentLocation_();
     }
 
     /**
      * Draw a short line to show the trail of the ball.
      * @private
      */
-    drawDot_ = () => {
+    drawThinLineToCurrentLocation_ = () => {
         let r = this.radius / 2;
         let x0 = this.radius, y0 = this.radius;
         let x1 = x0 + r * Math.cos(this.arm0Rotation * Math.PI / 180);
@@ -182,30 +177,6 @@ class SvgSandPlate extends SandPlate {
         context.stroke();
         context.strokeStyle = "#000000";
     }
-
-    /**
-     * Return angle in degree.
-     * @private
-     */
-    trig2Angle = (c, s) => {
-        const eps = 1e-12;
-        if (Math.abs(s) < eps) {
-            return c > 0 ? 0 : 180;
-        }
-        if (Math.abs(c) < eps) {
-            return s > 0 ? 90 : 270;
-        }
-
-        let alpha = Math.asin(s) * 180 / Math.PI; // [-90, 90]
-        if (c < 0) {
-            alpha = 180 - alpha;
-        } else if (s < 0) {
-            alpha += 360;
-        }
-
-        return alpha;
-    }
-
 }
 
 export {SvgSandPlate}

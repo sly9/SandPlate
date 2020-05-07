@@ -72,7 +72,7 @@ class SandPlate {
     }
 
     /**
-     * X coordinate of the ball. Range: [-400,400]
+     * X coordinate of the ball. Range: [-RADIUS,RADIUS]
      * @return {number}
      */
     get currentX() {
@@ -83,7 +83,7 @@ class SandPlate {
     }
 
     /**
-     * Y coordinate of the ball. Range: [-400,400]
+     * Y coordinate of the ball. Range: [-RADIUS,RADIUS]
      * @return {number}
      */
     get currentY() {
@@ -91,6 +91,28 @@ class SandPlate {
         let y1 = r * Math.sin(this.arm0Rotation * Math.PI / 180);
         let y2 = y1 + r * Math.sin((this.arm0Rotation + this.arm1Rotation) * Math.PI / 180);
         return y2;
+    }
+
+    /**
+     * Return angle in degree.
+     */
+    static trig2Angle = (c, s) => {
+        const eps = 1e-12;
+        if (Math.abs(s) < eps) {
+            return c > 0 ? 0 : 180;
+        }
+        if (Math.abs(c) < eps) {
+            return s > 0 ? 90 : 270;
+        }
+
+        let alpha = Math.asin(s) * 180 / Math.PI; // [-90, 90]
+        if (c < 0) {
+            alpha = 180 - alpha;
+        } else if (s < 0) {
+            alpha += 360;
+        }
+
+        return alpha;
     }
 
     /**
@@ -106,6 +128,10 @@ class SandPlate {
         return 3 * steps;
     }
 
+    async park() {
+        await this.gotoPos(0, 0);
+    }
+
     /**
      * Rotates the arm (A0) connected to the center.
      * @param steps How many steps
@@ -113,7 +139,7 @@ class SandPlate {
      * @param {boolean} drawDotAfterRotation Whether a dot should be drawn after move. Noop for real sand plate.
      * @param {number} Extra time in milliseconds to sleep, after rotation, before reporting complete.
      */
-    rotateArm0 = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
+    async rotateArm0(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
         if (steps < 0) {
             console.warn('Why on earth would you move negative steps? Change your direction!');
         }
@@ -126,7 +152,7 @@ class SandPlate {
      * @param {boolean} drawDotAfterRotation Whether a dot should be drawn after move. Noop for real sand plate.
      * @param {number} Extra time in milliseconds to sleep, after rotation, before reporting complete.
      */
-    rotateArm1 = async (steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) => {
+    async rotateArm1(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
         if (steps < 0) {
             console.warn('Why on earth would you move negative steps? Change your direction!');
         }
@@ -142,8 +168,8 @@ class SandPlate {
      * @returns {Promise<void>}
      */
     rotateBothArms = async (arm0Steps = 1, arm0Clockwise = true, arm1Steps = 1, arm1Clockwise = true, drawDotAfterRotation = true) => {
-        let rotateLargerSteps = arm0Steps > arm1Steps ? this.rotateArm0 : this.rotateArm1;
-        let rotateSmallerSteps = arm0Steps > arm1Steps ? this.rotateArm1 : this.rotateArm0;
+        let rotateLargerSteps = arm0Steps > arm1Steps ? this.rotateArm0.bind(this) : this.rotateArm1.bind(this);
+        let rotateSmallerSteps = arm0Steps > arm1Steps ? this.rotateArm1.bind(this) : this.rotateArm0.bind(this);
         let largerSteps = arm0Steps > arm1Steps ? arm0Steps : arm1Steps;
         let smallerSteps = arm0Steps > arm1Steps ? arm1Steps : arm0Steps;
         let largerClockwise = arm0Steps > arm1Steps ? arm0Clockwise : arm1Clockwise;
@@ -166,8 +192,8 @@ class SandPlate {
 
     /**
      * Move end point of Arm1 to (x0, y0) from current location.
-     * @param x0 The x coordinates. X==0 here means the center of the circle. Range: [-400,400]
-     * @param y0 The y coordinates. Y==0 here means the center of the circle. Range: [-400,400]
+     * @param x0 The x coordinates. X==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
+     * @param y0 The y coordinates. Y==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
      * @returns {Promise<void>}
      */
     gotoPos = async (x0, y0) => {
@@ -269,7 +295,7 @@ class SandPlate {
          *      cos(alpha) = xt / r
          *      sin(alpha) = yt / r
          */
-        let alpha = this.trig2Angle(xt / r, yt / r);
+        let alpha = SandPlate.trig2Angle(xt / r, yt / r);
         let delta = alpha - a0;
         delta = (delta % 360 + 360) % 360
 
@@ -288,7 +314,7 @@ class SandPlate {
          * Note: the distance between (xt, yt) and (x0, y0) is not exactly r.
          */
         let rt = Math.sqrt((x0 - xt) * (x0 - xt) + (y0 - yt) * (y0 - yt));
-        let beta = this.trig2Angle((x0 - xt) / rt, (y0 - yt) / rt);
+        let beta = SandPlate.trig2Angle((x0 - xt) / rt, (y0 - yt) / rt);
         delta = beta - a0 - a1;
         delta = (delta % 360 + 360) % 360
 
@@ -396,7 +422,7 @@ class SandPlate {
         s = Math.sin(theta / steps * Math.PI / 180);
 
         let nextX, nextY;
-        for (let j = 0; j < steps-1; ++j) {
+        for (let j = 0; j < steps - 1; ++j) {
             nextX = x0 + (curX - x0) * c - (curY - y0) * s;
             nextY = y0 + (curY - y0) * c + (curX - x0) * s;
 
