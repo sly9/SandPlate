@@ -120,7 +120,7 @@ class SandPlate {
      * @param steps
      * @returns {number}
      */
-    static timeNeededForSteps (steps) {
+    static timeNeededForSteps(steps) {
         // 1024 step == 1 round
         // 1 round == 3 sec
         // 1 step = 3/1024 * 1000 milli second
@@ -141,7 +141,7 @@ class SandPlate {
      */
     async rotateArm0(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
         if (steps < 0) {
-            console.warn('Why on earth would you move negative steps? Change your direction!');
+            console.warn('Why on earth would you move negative steps? I\'m kind enough to fix this for you, don\'t do it again, promise me!', arguments);
         }
     }
 
@@ -154,7 +154,7 @@ class SandPlate {
      */
     async rotateArm1(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
         if (steps < 0) {
-            console.warn('Why on earth would you move negative steps? Change your direction!');
+            console.warn('Why on earth would you move negative steps? I\'m kind enough to fix this for you, don\'t do it again, promise me!', arguments);
         }
     }
 
@@ -186,7 +186,7 @@ class SandPlate {
     }
 
     // Draw a dot, noop for SVG
-    drawBigDot (x, y) {
+    drawBigDot(x, y) {
 
     }
 

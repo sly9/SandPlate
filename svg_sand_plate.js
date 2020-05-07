@@ -84,6 +84,10 @@ class SvgSandPlate extends SandPlate {
      */
     async rotateArm0(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
         await super.rotateArm0(steps, clockwise, drawDotAfterRotation);
+        if (steps < 0) {
+            steps = -steps;
+            clockwise = !clockwise;
+        }
 
         let timeSlept = 0;
         while (steps > 0) {
@@ -114,6 +118,11 @@ class SvgSandPlate extends SandPlate {
 
     async rotateArm1(steps = 1, clockwise = true, drawDotAfterRotation = true, extraSleepTime = 0) {
         await super.rotateArm1(steps, clockwise, drawDotAfterRotation);
+        if (steps < 0) {
+            steps = -steps;
+            clockwise = !clockwise;
+        }
+
         let timeSlept = 0;
         while (steps > 0) {
             steps = steps - 1;
