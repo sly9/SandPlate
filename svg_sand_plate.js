@@ -60,7 +60,7 @@ class SvgSandPlate extends SandPlate {
      * Draws two arms for use.
      * @private
      */
-    drawArms_ = () => {
+    drawArms_() {
         let x0 = this.radius, y0 = this.radius;
         // Actually the 'arm0' is the group of both arm0 and arm1.
         this.arm0_ = this.svgCanvas_.append('g');
@@ -144,7 +144,7 @@ class SvgSandPlate extends SandPlate {
      * Draw a short line to show the trail of the ball.
      * @private
      */
-    drawThinLineToCurrentLocation_ = () => {
+    drawThinLineToCurrentLocation_() {
         let r = this.radius / 2;
         let x0 = this.radius, y0 = this.radius;
         let x1 = x0 + r * Math.cos(this.arm0Rotation * Math.PI / 180);
@@ -161,14 +161,14 @@ class SvgSandPlate extends SandPlate {
         context.stroke();
     }
 
-    sleep_ = async (milliseconds) => {
+    async sleep_(milliseconds) {
         if (milliseconds > 2000) {
             //debugger
         }
         return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
 
-    drawBigDot = (x, y) => {
+    drawBigDot(x, y) {
         // console.log('draw big dot at' +x+', '+y)
         let context = this.canvas_.getContext('2d');
         context.beginPath();

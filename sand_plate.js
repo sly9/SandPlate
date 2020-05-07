@@ -96,7 +96,7 @@ class SandPlate {
     /**
      * Return angle in degree.
      */
-    static trig2Angle = (c, s) => {
+    static trig2Angle(c, s) {
         const eps = 1e-12;
         if (Math.abs(s) < eps) {
             return c > 0 ? 0 : 180;
@@ -167,7 +167,7 @@ class SandPlate {
      * @param drawDotAfterRotation Whether a red dot should be drawn after move. Noop for real sand plate.
      * @returns {Promise<void>}
      */
-    rotateBothArms = async (arm0Steps = 1, arm0Clockwise = true, arm1Steps = 1, arm1Clockwise = true, drawDotAfterRotation = true) => {
+    async rotateBothArms(arm0Steps = 1, arm0Clockwise = true, arm1Steps = 1, arm1Clockwise = true, drawDotAfterRotation = true) {
         let rotateLargerSteps = arm0Steps > arm1Steps ? this.rotateArm0.bind(this) : this.rotateArm1.bind(this);
         let rotateSmallerSteps = arm0Steps > arm1Steps ? this.rotateArm1.bind(this) : this.rotateArm0.bind(this);
         let largerSteps = arm0Steps > arm1Steps ? arm0Steps : arm1Steps;
@@ -196,7 +196,7 @@ class SandPlate {
      * @param y0 The y coordinates. Y==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
      * @returns {Promise<void>}
      */
-    gotoPos = async (x0, y0) => {
+    async gotoPos(x0, y0) {
         const eps = 1e-2;
         const maxStepLength = 10;
 
@@ -358,7 +358,7 @@ class SandPlate {
      * @param y
      * @return {Promise<void>}
      */
-    lineTo = async (x, y) => {
+    async lineTo(x, y) {
         console.log(`Line to {${x}, ${y}}`);
         //naive solution, in 50 steps
         let dX = x - this.currentX;
@@ -392,7 +392,7 @@ class SandPlate {
      * @param drawMinorArc
      * @return {Promise<void>}
      */
-    arcTo = async (x, y, radius, rightHandSide = true, drawMinorArc = true) => {
+    async arcTo(x, y, radius, rightHandSide = true, drawMinorArc = true) {
         let curX = this.currentX;
         let curY = this.currentY;
 
@@ -423,7 +423,7 @@ class SandPlate {
         theta *= 180 / Math.PI;
 
         if (!drawMinorArc) {
-            theta  = rightHandSide ? 360 - theta : -360 - theta;
+            theta = rightHandSide ? 360 - theta : -360 - theta;
         }
 
         const maxStepLength = 4;
