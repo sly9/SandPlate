@@ -327,29 +327,55 @@ class SandPlate {
 
         let j1 = Math.floor(delta / SandPlate.DEGREES_PER_STEP);
 
-        // console.log('steps ' + j0 + ' ' + j1);
+        /**
+         * Grid search to further increase precision in a small neighborhood
+         * of (j0, j1), the search width is controlled by the constant gridSearchWidth
+         */
+        const gridSearchWidth = 5;
+
+        let j0s = j0, j1s = j1;
+        let mindist = this.radius * this.radius * 4 + 1;
+        for (let i = j0 - gridSearchWidth; i <= j0 + gridSearchWidth; ++i) {
+            for (let j = j1 - gridSearchWidth; j <= j1 + gridSearchWidth; ++j) {
+                xt = r * Math.cos((this.arm0Rotation + i * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+                xt += r * Math.cos((this.arm0Rotation + this.arm1Rotation + (i + j) * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+                yt = r * Math.sin((this.arm0Rotation + i * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+                yt += r * Math.sin((this.arm0Rotation + this.arm1Rotation + (i + j) * SandPlate.DEGREES_PER_STEP) * Math.PI / 180);
+
+                let dist = (xt - x0) * (xt - x0) + (yt - y0) * (yt - y0);
+                if (dist < mindist) {
+                    mindist = dist;
+                    j0s = i;
+                    j1s = j;
+                }
+            }
+        }
+
+        j0s = (j0s % SandPlate.STEPS_PER_ROUND + SandPlate.STEPS_PER_ROUND) % SandPlate.STEPS_PER_ROUND;
+        j1s = (j1s % SandPlate.STEPS_PER_ROUND + SandPlate.STEPS_PER_ROUND) % SandPlate.STEPS_PER_ROUND;
 
         /**
          * Rotate Arm0 and Arm1 clockwise by j0 and j1 steps synchronously
          */
         let arm0Steps, arm0Clockwise, arm1Steps, arm1Clockwise;
-        if (j0 <= SandPlate.STEPS_PER_ROUND / 2) {
-            arm0Steps = j0;
+        if (j0s <= SandPlate.STEPS_PER_ROUND / 2) {
+            arm0Steps = j0s;
             arm0Clockwise = true;
         } else {
-            arm0Steps = SandPlate.STEPS_PER_ROUND - j0;
+            arm0Steps = SandPlate.STEPS_PER_ROUND - j0s;
             arm0Clockwise = false;
         }
 
-        if (j1 <= SandPlate.STEPS_PER_ROUND / 2) {
-            arm1Steps = j1;
+        if (j1s <= SandPlate.STEPS_PER_ROUND / 2) {
+            arm1Steps = j1s;
             arm1Clockwise = true;
         } else {
-            arm1Steps = SandPlate.STEPS_PER_ROUND - j1;
+            arm1Steps = SandPlate.STEPS_PER_ROUND - j1s;
             arm1Clockwise = false;
         }
         await this.rotateBothArms(arm0Steps, arm0Clockwise, arm1Steps, arm1Clockwise, true);
-
+ 
+        // console.log(`actual pos {${this.currentX}, ${this.currentY}}`);
         this.drawBigDot(this.currentX, this.currentY);
     }
 
@@ -360,7 +386,7 @@ class SandPlate {
      * @return {Promise<void>}
      */
     async lineTo(x, y) {
-        const lineToMaxStepLength = 2;
+        const lineToMaxStepLength = 3;
 
         console.log(`Line to {${x}, ${y}}`);
 
@@ -392,7 +418,7 @@ class SandPlate {
      * @return {Promise<void>}
      */
     async arcTo(x, y, radius, rightHandSide = true, drawMinorArc = true) {
-        const arcToMaxStepLength = 2;
+        const arcToMaxStepLength = 3;
 
         console.log(`Arc to {${x}, ${y}}`);
 
