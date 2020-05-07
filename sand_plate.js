@@ -191,7 +191,7 @@ class SandPlate {
     }
 
     /**
-     * Move end point of Arm1 to (x0, y0) from current location.
+     * Moves end point of Arm1 to (x0, y0) from current location.
      * @param x0 The x coordinates. X==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
      * @param y0 The y coordinates. Y==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
      * @returns {Promise<void>}
@@ -384,7 +384,7 @@ class SandPlate {
     }
 
     /**
-     * Draw an arc from current position to (x, y) with radius r
+     * Draws an arc from current position to (x, y) with radius r
      * @param x
      * @param y
      * @param radius Radius of the arc.

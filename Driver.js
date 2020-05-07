@@ -33,25 +33,25 @@ class Driver {
     async executeInstruction(instruction) {
         switch (instruction.type) {
             case InstructionType.LINE:
-                await sandPlate.lineTo.apply(this, instruction.arguments);
+                await sandPlate.lineTo.apply(sandPlate, instruction.arguments);
                 break;
             case InstructionType.PARK:
                 await sandPlate.park();
                 break;
             case InstructionType.GOTO:
-                await sandPlate.gotoPos.apply(this, instruction.arguments);
+                await sandPlate.gotoPos.apply(sandPlate, instruction.arguments);
                 break;
             case InstructionType.ARC:
-                await sandPlate.minorArcTo.apply(this, instruction.arguments);
+                await sandPlate.minorArcTo.apply(sandPlate, instruction.arguments);
                 break;
             case InstructionType.ROTATE_ARM0:
-                await sandPlate.rotateArm0.apply(this, instruction.arguments);
+                await sandPlate.rotateArm0.apply(sandPlate, instruction.arguments);
                 break;
             case InstructionType.ROTATE_ARM1:
-                await sandPlate.rotateArm1.apply(this, instruction.arguments);
+                await sandPlate.rotateArm1.apply(sandPlate, instruction.arguments);
                 break;
             case InstructionType.ROTATE_BOTH_ARMS:
-                await sandPlate.rotateBothArms().apply(this, instruction.arguments);
+                await sandPlate.rotateBothArms().apply(sandPlate, instruction.arguments);
                 break;
         }
     }

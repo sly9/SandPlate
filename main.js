@@ -181,17 +181,16 @@ let drawStrange = async () => {
     };
     for (let q = 1; q <= 4; q++) {
         for (let i = 0; i < sectionCount; i++) {
-            firstAxisValue = sandPlate.radius - stepSize * 2 * i, 0
+            firstAxisValue = sandPlate.radius - stepSize * 2 * i, 0;
             secondAxisValue = 0;
             await sandPlate.lineTo(getX(firstAxisValue, secondAxisValue, q), getY(firstAxisValue, secondAxisValue, q));
+
             firstAxisValue = sandPlate.radius - stepSize * 2 * i - stepSize;
             secondAxisValue = 0;
             await sandPlate.lineTo(getX(firstAxisValue, secondAxisValue, q), getY(firstAxisValue, secondAxisValue, q));
 
             firstAxisValue = sandPlate.radius - stepSize * 2 * i - stepSize;
             secondAxisValue = 2 * stepSize * (i + 1);
-
-
             await sandPlate.lineTo(getX(firstAxisValue, secondAxisValue, q), getY(firstAxisValue, secondAxisValue, q));
 
             firstAxisValue = sandPlate.radius - stepSize * 2 * i - stepSize * 2;
