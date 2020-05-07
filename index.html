@@ -18,6 +18,7 @@
             height: 800px;
             position: absolute;
         }
+
         #instructionTextarea {
             width: 800px;
             height: 300px;
@@ -50,9 +51,11 @@
         line,200,200
         park
         goto, 400, 0
-        loopStart, 20
+        loopStart, 8
         rotateArm0, 10*i0
-        rotateArm1, 30
+        loopStart, 5
+        rotateArm1, 20*i1, i1%2 == 0 ? true:false
+        loopEnd
         loopEnd
     </textarea>
     <button id="runInstructions">Run instructions above</button>
