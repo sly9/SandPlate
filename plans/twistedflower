@@ -1,0 +1,14 @@
+let, n, 8
+let, dr, 3
+let, r, 360
+let, scale, 0.4
+
+goto, 0, 0
+loopStart, r / dr
+let, r0, i0 * dr
+let, x, r0 * r0 / r / 2
+let, y, r0 * Math.sqrt(1 - r0 * r0 / 4 / r / r)
+let, c, Math.cos(i0 * Math.PI * 2 / n)
+let, s, Math.sin(i0 * Math.PI * 2 / n)
+arc, x * c - y * s, x * s + y * c, scale * r0, true, true
+loopEnd

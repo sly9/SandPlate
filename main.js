@@ -275,6 +275,10 @@ let drawSunflower = async () => {
     instructionTextArea.value = await loadURL('plans/sunflower');
 };
 
+let drawTwistedflower = async () => {
+    instructionTextArea.value = await loadURL('plans/twistedflower');
+};
+
 async function loadURL(url) {
     let lines = [];
     for await (let line of makeTextFileLineIterator(url)) {
