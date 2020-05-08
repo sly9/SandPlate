@@ -17,7 +17,7 @@ let init = () => {
     document.getElementById('drawArcs').addEventListener('click', drawArcs);
     document.getElementById('drawFun').addEventListener('click', drawFun);
     document.getElementById('drawFun2').addEventListener('click', drawFun2);
-    document.getElementById('drawFun3').addEventListener('click', drawFun3);
+    document.getElementById('drawSunflower').addEventListener('click', drawSunflower);
     document.getElementById('runInstructions').addEventListener('click', runInstructions);
     document.getElementById('reset').addEventListener('click', reset);
 
@@ -271,8 +271,8 @@ let drawFun2 = async () => {
     }
 }
 
-let drawFun3 = async () => {
-    instructionTextArea.value = await loadURL('plans/plan01');
+let drawSunflower = async () => {
+    instructionTextArea.value = await loadURL('plans/sunflower');
 };
 
 async function loadURL(url) {

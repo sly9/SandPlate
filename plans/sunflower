@@ -1,0 +1,15 @@
+# set the following 4 constants as you want
+let, majorAxis, 400
+let, minorAxis, 80
+let, numberOfLeaves, 20
+let, numberOfSegments, 300
+
+loopStart, numberOfLeaves / 2
+let, c, Math.cos(2 * i0 * Math.PI / numberOfLeaves)
+let, s, Math.sin(2 * i0 * Math.PI / numberOfLeaves)
+loopStart, numberOfSegments
+let, x, majorAxis * Math.cos(Math.PI * (2 * i1 / numberOfSegments + 0.5))
+let, y, minorAxis * Math.sin(Math.PI * (2 * i1 / numberOfSegments + 0.5))
+goto, x * c - y * s, x * s + y * c
+loopEnd
+loopEnd
