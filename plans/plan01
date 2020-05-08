@@ -1,0 +1,12 @@
+let, a, 400
+let, b, 100
+loopStart,10
+let, tilt, 18
+let, c, Math.cos(tilt * i0 * Math.PI / 180)
+let, s, Math.sin(tilt * i0 * Math.PI / 180)
+loopStart, 400
+let, x, a * Math.cos(Math.PI * (i1 / 200 + 0.5))
+let, y, b * Math.sin(Math.PI * (i1 / 200 + 0.5))
+goto, x * c - y * s, x * s + y * c
+loopEnd
+loopEnd

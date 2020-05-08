@@ -20,10 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4270d844-a61a-46d2-a7bc-025a3853ef43" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/plans/plan01" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plan.js" beforeDir="false" afterPath="$PROJECT_DIR$/Plan.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sand_plate.js" beforeDir="false" afterPath="$PROJECT_DIR$/sand_plate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +68,8 @@
       <workItem from="1588562416955" duration="933000" />
       <workItem from="1588644245063" duration="6000000" />
       <workItem from="1588696419041" duration="8380000" />
-      <workItem from="1588723826251" duration="25588000" />
+      <workItem from="1588723826251" duration="25856000" />
+      <workItem from="1588895666933" duration="1358000" />
     </task>
     <servers />
   </component>
@@ -88,6 +89,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="1483" y="358" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1588895907116">
+      <screen x="0" y="0" width="2752" height="1112" />
+    </state>
+    <state x="1483" y="358" key="#com.intellij.fileTypes.FileTypeChooser/0.0.2752.1112@0.0.2752.1112" timestamp="1588895907116" />
     <state x="1226" y="201" key="SettingsEditor" timestamp="1588645373893">
       <screen x="0" y="0" width="2752" height="1112" />
     </state>

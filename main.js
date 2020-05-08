@@ -8,7 +8,6 @@ let init = () => {
     /** @type {Element} */
     let canvas = document.getElementById('canvas');
 
-    sandPlate = new SvgSandPlate(canvas, svgCanvas, RADIUS);
     document.getElementById('draw1').addEventListener('click', drawSpiral);
     document.getElementById('draw3').addEventListener('click', drawNestedSpiral);
     document.getElementById('draw4').addEventListener('click', drawSquare);
@@ -18,8 +17,11 @@ let init = () => {
     document.getElementById('drawArcs').addEventListener('click', drawArcs);
     document.getElementById('drawFun').addEventListener('click', drawFun);
     document.getElementById('drawFun2').addEventListener('click', drawFun2);
+    document.getElementById('drawFun3').addEventListener('click', drawFun3);
     document.getElementById('runInstructions').addEventListener('click', runInstructions);
+    document.getElementById('reset').addEventListener('click', reset);
 
+    sandPlate = new SvgSandPlate(canvas, svgCanvas, RADIUS);
     window.sandPlate = sandPlate;
     driver = new Driver(sandPlate);
     window.driver = driver;
@@ -268,6 +270,68 @@ let drawFun2 = async () => {
         await sandPlate.arcTo(r * Math.cos(i * 2 * Math.PI / n), r * Math.sin(i * 2 * Math.PI / n), r * scale);
     }
 }
+
+let drawFun3 = async () => {
+    let lines = [];
+    for await (let line of makeTextFileLineIterator('plans/plan01')) {
+        lines.push(line);
+    }
+
+    instructionTextArea.value = lines.join('\n');
+};
+
+async function* makeTextFileLineIterator(fileURL) {
+    const utf8Decoder = new TextDecoder('utf-8');
+    const response = await fetch(fileURL);
+    const reader = response.body.getReader();
+    let {value: chunk, done: readerDone} = await reader.read();
+    chunk = chunk ? utf8Decoder.decode(chunk) : '';
+
+    const re = /\n/gm;
+    let startIndex = 0;
+    let result;
+
+    for (; ;) {
+        let result = re.exec(chunk);
+        if (!result) {
+            if (readerDone) {
+                break;
+            }
+            let remainder = chunk.substr(startIndex);
+            ({value: chunk, done: readerDone} = await reader.read());
+            chunk = remainder + (chunk ? utf8Decoder.decode(chunk) : '');
+            startIndex = re.lastIndex = 0;
+            continue;
+        }
+        yield chunk.substring(startIndex, result.index);
+        startIndex = re.lastIndex;
+    }
+    if (startIndex < chunk.length) {
+        // last line didn't end in a newline char
+        yield chunk.substr(startIndex);
+    }
+}
+
+let reset = () => {
+    try {
+        sandPlate.canvas_ = null;
+        sandPlate.svgCanvas_.selectAll("*").remove();
+
+        /** @type {Element} */
+        let svgCanvas = document.getElementById('svg');
+        /** @type {Element} */
+        let canvas = document.getElementById('canvas');
+        let context = canvas.getContext('2d');
+        context.clearRect(0, 0, 800, 800);
+
+        sandPlate = new SvgSandPlate(canvas, svgCanvas, RADIUS);
+        window.sandPlate = sandPlate;
+        driver = new Driver(sandPlate);
+        window.driver = driver;
+    } catch (e) {
+
+    }
+};
 
 let runInstructions = async () => {
     console.log('Run instructions!');
