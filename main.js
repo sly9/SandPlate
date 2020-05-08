@@ -18,6 +18,7 @@ let init = () => {
     document.getElementById('drawFun').addEventListener('click', drawFun);
     document.getElementById('drawFun2').addEventListener('click', drawFun2);
     document.getElementById('drawSunflower').addEventListener('click', drawSunflower);
+    document.getElementById('drawTwistedflower').addEventListener('click', drawTwistedflower);
     document.getElementById('runInstructions').addEventListener('click', runInstructions);
     document.getElementById('reset').addEventListener('click', reset);
 
