@@ -272,13 +272,17 @@ let drawFun2 = async () => {
 }
 
 let drawFun3 = async () => {
+    instructionTextArea.value = await loadURL('plans/plan01');
+};
+
+async function loadURL(url) {
     let lines = [];
-    for await (let line of makeTextFileLineIterator('plans/plan01')) {
+    for await (let line of makeTextFileLineIterator(url)) {
         lines.push(line);
     }
+    return lines.join('\n');
+}
 
-    instructionTextArea.value = lines.join('\n');
-};
 
 async function* makeTextFileLineIterator(fileURL) {
     const utf8Decoder = new TextDecoder('utf-8');
