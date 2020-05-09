@@ -192,16 +192,25 @@ class SandPlate {
     }
 
     /**
-     * Moves end point of Arm1 to (x0, y0) from current location.
+     * Moves end point of Arm1 to (x0, y0) after rotation from current location.
      * @param x0 The x coordinates. X==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
      * @param y0 The y coordinates. Y==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
+     * @param rotation Clockwise rotation in degree for the target location.
      * @returns {Promise<void>}
      */
-    async gotoPos(x0, y0) {
+    async gotoPos(x0, y0, rotation = 0) {
         const eps = 1e-2;
         const gotoMaxStepLength = 10;
 
         // console.log(`gotoPos {${x0}, ${y0}}`);
+
+        if (Math.abs(rotation) < eps) {
+            let c = Math.cos(Math.PI * rotation / 180);
+            let s = Math.sin(Math.PI * rotation / 180);
+
+            await this.gotoPos(x0 * c - y0 * s, x0 * s + y0 * c);
+            return;
+        }
 
         let r = this.armLength;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
