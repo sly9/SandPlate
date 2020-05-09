@@ -94,6 +94,9 @@ class Driver {
             case InstructionType.ROTATE_BOTH_ARMS:
                 await this.plate_.rotateBothArms().apply(this.plate_, resolvedArguments);
                 break;
+            case InstructionType.HILBERT:
+                await this.plate_.hilbertCurve.apply(this.plate_, resolvedArguments);
+                break;
             case InstructionType.LOOP: {
                 let loopCount = parseInt(resolvedArguments[0]);
                 context['loopLevel'] = context['loopLevel'] + 1;
