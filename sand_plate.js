@@ -204,9 +204,10 @@ class SandPlate {
 
         // console.log(`gotoPos {${x0}, ${y0}}`);
 
-        if (Math.abs(rotation) >= eps) {
-            let c = Math.cos(Math.PI * rotation / 180);
-            let s = Math.sin(Math.PI * rotation / 180);
+        let rotation0 = (rotation % 360 + 360) % 360
+        if (rotation0 >= eps || 360 - rotation0 >= eps) {
+            let c = Math.cos(Math.PI * rotation0 / 180);
+            let s = Math.sin(Math.PI * rotation0 / 180);
 
             await this.gotoPos(x0 * c - y0 * s, x0 * s + y0 * c);
             return;
@@ -389,21 +390,36 @@ class SandPlate {
     }
 
     /**
-     * Tries its best to draw a (relatively) straight line to (x,y) from current position.
+     * Tries its best to draw a (relatively) straight line to (x,y) after rotation from current position.
      * @param x
      * @param y
+     * @param rotaion Clockwise rotation in degree for the target location.
      * @return {Promise<void>}
      */
-    async lineTo(x, y) {
+    async lineTo(x, y, rotation = 0) {
+        const eps = 1e-2;
         const lineToMaxStepLength = 3;
 
-        console.log(`Line to {${x}, ${y}}`);
+        let x0, y0;
+        let rotation0 = (rotation % 360 + 360) % 360
+        if (rotation0 >= eps || 360 - rotation0 >= eps) {
+            let c = Math.cos(Math.PI * rotation0 / 180);
+            let s = Math.sin(Math.PI * rotation0 / 180);
+
+            x0 = x * c - y * s;
+            y0 = x * s + y * c;
+        } else {
+            x0 = x;
+            y0 = y;
+        }
+
+        console.log(`Line to {${x0}, ${y0}}`);
 
         let startX = this.currentX;
         let startY = this.currentY;
 
-        let dX = x - startX;
-        let dY = y - startY;
+        let dX = x0 - startX;
+        let dY = y0 - startY;
 
         let steps = Math.ceil(Math.sqrt(dX * dX + dY * dY) / lineToMaxStepLength);
 
@@ -414,7 +430,7 @@ class SandPlate {
             await this.gotoPos(i * xStepSize + startX, i * yStepSize + startY);
         }
 
-        await this.gotoPos(x, y);
+        await this.gotoPos(x0, y0);
     }
 
     /**
