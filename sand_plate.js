@@ -204,7 +204,7 @@ class SandPlate {
 
         // console.log(`gotoPos {${x0}, ${y0}}`);
 
-        if (Math.abs(rotation) < eps) {
+        if (Math.abs(rotation) >= eps) {
             let c = Math.cos(Math.PI * rotation / 180);
             let s = Math.sin(Math.PI * rotation / 180);
 
