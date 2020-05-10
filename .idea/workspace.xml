@@ -22,6 +22,8 @@
     <list default="true" id="4270d844-a61a-46d2-a7bc-025a3853ef43" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sand_plate.js" beforeDir="false" afterPath="$PROJECT_DIR$/sand_plate.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +69,8 @@
       <workItem from="1588644245063" duration="6000000" />
       <workItem from="1588696419041" duration="8380000" />
       <workItem from="1588723826251" duration="25856000" />
-      <workItem from="1588895666933" duration="2096000" />
+      <workItem from="1588895666933" duration="2697000" />
+      <workItem from="1589101090091" duration="1189000" />
     </task>
     <servers />
   </component>
@@ -99,10 +102,10 @@
       <screen x="0" y="0" width="2752" height="1112" />
     </state>
     <state x="1427" y="289" width="579" height="534" key="find.popup/0.0.2752.1112@0.0.2752.1112" timestamp="1588821351070" />
-    <state x="1375" y="261" key="run.anything.popup" timestamp="1588822049398">
+    <state x="1375" y="261" key="run.anything.popup" timestamp="1589101635644">
       <screen x="0" y="0" width="2752" height="1112" />
     </state>
-    <state x="1375" y="261" key="run.anything.popup/0.0.2752.1112@0.0.2752.1112" timestamp="1588822049398" />
+    <state x="1375" y="261" key="run.anything.popup/0.0.2752.1112@0.0.2752.1112" timestamp="1589101635644" />
     <state x="1382" y="247" width="672" height="678" key="search.everywhere.popup" timestamp="1588816726949">
       <screen x="0" y="0" width="2752" height="1112" />
     </state>

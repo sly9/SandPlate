@@ -21,14 +21,34 @@ class SandPlate {
          */
         this.arm0Rotation_ = 0;
         this.arm1Rotation_ = 0;
+
+        /**
+         * The 'logo' turtle facing direction. Not all operations needs this, not all operations updates this.
+         * @type {number}
+         * @private
+         */
+        this.LOGODirectionInDegrees_ = 0;
     }
 
+    /**
+     * Static getters.
+     */
+
+    /**
+     *
+     * @return {number}
+     * @constructor
+     */
     static get DEGREES_PER_STEP() {
         return 360 / SandPlate.STEPS_PER_ROUND;
     }
 
     static get STEPS_PER_ROUND() {
         return 1024;
+    }
+
+    static get EPS() {
+        return 1e-2;
     }
 
     /**
@@ -54,6 +74,10 @@ class SandPlate {
     get arm0Rotation() {
         return (this.arm0Rotation_ % 360 + 360) % 360;
     }
+
+    /**
+     * Getter and Setters
+     */
 
     set arm0Rotation(position) {
         this.arm0Rotation_ = position;
@@ -94,14 +118,35 @@ class SandPlate {
     }
 
     /**
-     * Return angle in degree.
+     * Static helper methods.
+     */
+
+    /**
+     * Returns a new position after reverse 'rotating' the canvas by given degrees.
+     * @param x
+     * @param y
+     * @param rotation
+     * @return {number[]}
+     */
+    static rotatedPosition(x = 0, y = 0, rotation = 0) {
+        rotation = (rotation % 360 + 360) % 360;
+        if (rotation >= SandPlate.EPS && rotation <= 360 - SandPlate.EPS) {
+            let c = Math.cos(Math.PI * rotation / 180);
+            let s = Math.sin(Math.PI * rotation / 180);
+
+            return [x * c - y * s, x * s + y * c];
+        }
+        return [x, y];
+    }
+
+    /**
+     * Returns angle in degree.
      */
     static trig2Angle(c, s) {
-        const eps = 1e-12;
-        if (Math.abs(s) < eps) {
+        if (Math.abs(s) < SandPlate.EPS) {
             return c > 0 ? 0 : 180;
         }
-        if (Math.abs(c) < eps) {
+        if (Math.abs(c) < SandPlate.EPS) {
             return s > 0 ? 90 : 270;
         }
 
@@ -128,9 +173,18 @@ class SandPlate {
         return 3 * steps;
     }
 
+
+    /**
+     * Basic methods.
+     */
+
+    /**
+     * Goes back to original state.
+     * @return {Promise<void>}
+     */
     async park() {
         await this.rotateBothArms(this.arm0Rotation / SandPlate.DEGREES_PER_STEP, false,
-            (this.arm1Rotation + 180)/ SandPlate.DEGREES_PER_STEP, false);
+            (this.arm1Rotation + 180) / SandPlate.DEGREES_PER_STEP, false);
     }
 
     /**
@@ -195,23 +249,10 @@ class SandPlate {
      * Moves end point of Arm1 to (x0, y0) after rotation from current location.
      * @param x0 The x coordinates. X==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
      * @param y0 The y coordinates. Y==0 here means the center of the circle. Range: [-RADIUS,RADIUS]
-     * @param rotation Clockwise rotation in degree for the target location.
      * @returns {Promise<void>}
      */
-    async gotoPos(x0, y0, rotation = 0) {
-        const eps = 1e-2;
+    async gotoPos(x0, y0) {
         const gotoMaxStepLength = 10;
-
-        let rotation0 = (rotation % 360 + 360) % 360
-        if (rotation0 >= eps && rotation0 <= 360 - eps) {
-            let c = Math.cos(Math.PI * rotation0 / 180);
-            let s = Math.sin(Math.PI * rotation0 / 180);
-
-            await this.gotoPos(x0 * c - y0 * s, x0 * s + y0 * c);
-            return;
-        }
-
-        // console.log(`gotoPos {${x0}, ${y0}}`);
 
         let r = this.armLength;
         let r0 = Math.sqrt(x0 * x0 + y0 * y0);
@@ -246,7 +287,7 @@ class SandPlate {
         let a0 = this.arm0Rotation;
         let a1 = this.arm1Rotation;
 
-        if (Math.abs(x0) < eps && Math.abs(y0) < eps) {
+        if (Math.abs(x0) < SandPlate.EPS && Math.abs(y0) < SandPlate.EPS) {
             /**
              * When target is x0 = y0 = 0, simply move arm1Rotation to 180 and
              * no need to move Arm0.
@@ -263,13 +304,13 @@ class SandPlate {
             this.drawBigDot(x0, y0);
 
             return;
-        } else if (Math.abs(x0) < eps) {
+        } else if (Math.abs(x0) < SandPlate.EPS) {
             y1 = r0 * r0 / 2 / y0;
             y2 = y1;
 
             x1 = Math.sqrt(Math.pow(r, 2) - Math.pow(y1, 2));
             x2 = -1 * Math.sqrt(Math.pow(r, 2) - Math.pow(y2, 2));
-        } else if (Math.abs(y0) < eps) {
+        } else if (Math.abs(y0) < SandPlate.EPS) {
             x1 = r0 * r0 / 2 / x0;
             x2 = x1;
 
@@ -384,7 +425,7 @@ class SandPlate {
             arm1Clockwise = false;
         }
         await this.rotateBothArms(arm0Steps, arm0Clockwise, arm1Steps, arm1Clockwise, true);
- 
+
         // console.log(`actual pos {${this.currentX}, ${this.currentY}}`);
         this.drawBigDot(this.currentX, this.currentY);
     }
@@ -393,25 +434,12 @@ class SandPlate {
      * Tries its best to draw a (relatively) straight line to (x,y) after rotation from current position.
      * @param x
      * @param y
-     * @param rotaion Clockwise rotation in degree for the target location.
      * @return {Promise<void>}
      */
-    async lineTo(x, y, rotation = 0) {
-        const eps = 1e-2;
+    async lineTo(x, y) {
         const lineToMaxStepLength = 3;
 
-        let x0, y0;
-        let rotation0 = (rotation % 360 + 360) % 360
-        if (rotation0 >= eps && rotation0 <= 360 - eps) {
-            let c = Math.cos(Math.PI * rotation0 / 180);
-            let s = Math.sin(Math.PI * rotation0 / 180);
-
-            x0 = x * c - y * s;
-            y0 = x * s + y * c;
-        } else {
-            x0 = x;
-            y0 = y;
-        }
+        let x0 = x, y0 = y;
 
         // console.log(`Line to {${x0}, ${y0}} ${rotation0}`);
 
@@ -500,13 +528,18 @@ class SandPlate {
     }
 
     /**
+     * Fancy methods based on basic methods above.
+     */
+
+
+    /**
      * Draws a space-filling Hilbert curve
      * @param depth Depth of the Hilbert curve
      * @param rotation
      * @return {Promise<void>}
      */
     async hilbertCurve(depth, rotation = 0) {
-        console.log(`Draw Hilber curve of depth ${depth}.`);
+        console.log(`Draw Hilbert curve of depth ${depth}.`);
 
         if (depth <= 0) {
             console.warn(`Negative depth is not accepted!`);
@@ -544,21 +577,21 @@ class SandPlate {
             if (i == 1) {
                 pattern[0] = 'C';
 
-                x[0] = r/2;
-                y[0] = r/2;
+                x[0] = r / 2;
+                y[0] = r / 2;
 
-                x[1] = r/2;
-                y[1] = -r/2;
+                x[1] = r / 2;
+                y[1] = -r / 2;
 
-                x[2] = -r/2;
-                y[2] = -r/2;
+                x[2] = -r / 2;
+                y[2] = -r / 2;
 
-                x[3] = -r/2;
-                y[3] = r/2;
+                x[3] = -r / 2;
+                y[3] = r / 2;
             } else {
                 // pattern is of length n/4
                 // pattern[i] ==> patter[4 * i  :4 * i + 3] for i in [0, n/16 - 1]
-                for (let i = n/16 - 1; i >= 0; --i) {
+                for (let i = n / 16 - 1; i >= 0; --i) {
                     let pi = pattern[i];
                     for (let j = 0; j < 4; ++j) {
                         pattern[4 * i + j] = productionRules[pi][j];
@@ -567,7 +600,7 @@ class SandPlate {
 
                 // x, y are of length n
                 // x[i] ==> x[4 * i  :4 * i + 3] for i in [0, n/4 - 1]
-                for (let i = n/4 - 1; i >= 0; --i) {
+                for (let i = n / 4 - 1; i >= 0; --i) {
                     let xi = x[i], yi = y[i];
                     let pi = pattern[i];
 
@@ -580,7 +613,8 @@ class SandPlate {
         }
 
         for (let i = 0; i < n; ++i) {
-            await this.lineTo(x[i], y[i], rotation);
+            let [rotatedX, rotatedY] = SandPlate.rotatedPosition(x[i], y[i], rotation);
+            await this.lineTo(rotatedX, rotatedY);
         }
 
     }

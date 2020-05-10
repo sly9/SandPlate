@@ -18,7 +18,7 @@ let init = () => {
     document.getElementById('drawFun').addEventListener('click', drawFun);
     document.getElementById('drawFun2').addEventListener('click', drawFun2);
     document.getElementById('drawSunflower').addEventListener('click', drawSunflower);
-    document.getElementById('drawTwistedflower').addEventListener('click', drawTwistedflower);
+    document.getElementById('drawTwistedFlower').addEventListener('click', drawTwistedFlower);
     document.getElementById('drawHilbertCurve').addEventListener('click', drawHilbertCurve);
     document.getElementById('runInstructions').addEventListener('click', runInstructions);
     document.getElementById('reset').addEventListener('click', reset);
@@ -277,7 +277,7 @@ let drawSunflower = async () => {
     instructionTextArea.value = await loadURL('plans/sunflower');
 };
 
-let drawTwistedflower = async () => {
+let drawTwistedFlower = async () => {
     instructionTextArea.value = await loadURL('plans/twistedflower');
 };
 
