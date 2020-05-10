@@ -552,27 +552,44 @@ class SandPlate {
         let y0 = this.currentY;
         let x1 = this.currentX + Math.cos(direction / 180 * Math.PI) * steps;
         let y1 = this.currentY + Math.sin(direction / 180 * Math.PI) * steps;
-        console.log(`Forward from  {${x0},${y0}} to {${x1},${y1}}`);
+        //console.log(`Forward from  {${x0},${y0}} to {${x1},${y1}}`);
         await this.lineTo(x1, y1);
     }
 
     async fakeArc(radius, degrees = 120, rightHanded = true) {
         for (let i = 0; i < 4; i++) {
-            this.currentLogoDirection += rightHanded?30:-30;
+            this.currentLogoDirection += rightHanded ? 30 : -30;
             await this.forward(radius / 2);
         }
     }
+    async weird(level) {
+        let r = 10;
+        for (let i = 0; i < level; i++) {
+            r = r * Math.sqrt(7);
+        }
+        let x0 = r, y0 = 0;
 
-    async weird() {
-        await  this.gotoPos(200,0);
-        for (let i =0;i<3;i++){
-            let seq = [true,true,false,true,true,false,false];
-            for (let j = 0;j<7;j++){
-                await this.fakeArc(60,120, seq[j]);
-
-            }
+        await this.gotoPos(x0, y0);
+        this.currentLogoDirection = 90;
+        for (let i = 0; i < 3; i++) {
+            await this.weird_(level, r, true);
         }
     }
+
+    async weird_(remainingLevel, radius, rightHanded) {
+        if (remainingLevel == 0) {
+            //this.currentLogoDirection += (rightHanded ? 120 : -120);
+            await this.fakeArc(radius, 120, rightHanded);
+        } else {
+            this.currentLogoDirection -= 180 - (90 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180 - 30);
+            let seq = [true, true, false, true, true, false, false];
+            for (let j = 0; j < 7; j++) {
+                await this.weird_(remainingLevel - 1, radius / Math.sqrt(7), rightHanded ? seq[j] : !seq[j]);
+            }
+            this.currentLogoDirection += 180 - (90 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180 - 30);
+        }
+    }
+
 
     // Not working
     async arc(radius, degrees, rightHanded = true, minorArc = true, direction = -9999999) {
