@@ -572,21 +572,22 @@ class SandPlate {
         await this.gotoPos(x0, y0);
         this.currentLogoDirection = 90;
         for (let i = 0; i < 3; i++) {
-            await this.weird_(level, r, true);
+            await this.weird_(level, r, true, true);
         }
     }
 
     async weird_(remainingLevel, radius, rightHanded) {
         if (remainingLevel == 0) {
             //this.currentLogoDirection += (rightHanded ? 120 : -120);
-            await this.arc(radius, 120, rightHanded);
+            await this.fakeArc(radius, 120, rightHanded);
         } else {
-            this.currentLogoDirection -= 180 - (90 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180 - 30);
+            const rotateDegreePerLevel = -120 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180;
+            this.currentLogoDirection +=  rotateDegreePerLevel;
             let seq = [true, true, false, true, true, false, false];
             for (let j = 0; j < 7; j++) {
                 await this.weird_(remainingLevel - 1, radius / Math.sqrt(7), rightHanded ? seq[j] : !seq[j]);
             }
-            this.currentLogoDirection += 180 - (90 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180 - 30);
+            this.currentLogoDirection -= rotateDegreePerLevel;
         }
     }
 
