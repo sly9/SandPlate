@@ -502,9 +502,10 @@ class SandPlate {
     /**
      * Draws a space-filling Hilbert curve
      * @param depth Depth of the Hilbert curve
+     * @param rotation
      * @return {Promise<void>}
      */
-    async hilbertCurve(depth) {
+    async hilbertCurve(depth, rotation = 0) {
         console.log(`Draw Hilber curve of depth ${depth}.`);
 
         if (depth <= 0) {
@@ -579,7 +580,7 @@ class SandPlate {
         }
 
         for (let i = 0; i < n; ++i) {
-            await this.lineTo(x[i], y[i], -45);
+            await this.lineTo(x[i], y[i], rotation);
         }
 
     }
