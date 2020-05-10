@@ -577,7 +577,7 @@ class SandPlate {
             //this.currentLogoDirection += (rightHanded ? 120 : -120);
             await this.arc(radius, 120, rightHanded);
         } else {
-            const rotateDegreePerLevel = -120 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180;
+            const rotateDegreePerLevel = -127.5 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180;
             this.currentLogoDirection +=  rotateDegreePerLevel;
             //let seq = [true, true, false, true, true, false, false];
             let seq = rightHanded ? [true, true, false, true, true, false, false] : [true, true, false, false, true, false, false];
