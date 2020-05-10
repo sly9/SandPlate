@@ -609,7 +609,11 @@ class SandPlate {
             //let seq = [true, true, false, true, true, false, false];
             let seq = rightHanded ? [true, true, false, true, true, false, false] : [true, true, false, false, true, false, false];
             for (let j = 0; j < 7; j++) {
+                let [x, y, radius1, rightHanded1, drawMinorArc] = SandPlate.convertToArcToArguments(this.currentX,this.currentY, this.currentLogoDirection, radius/Math.sqrt(7), 120,seq[j] );
+
                 await this.weird_(remainingLevel - 1, radius / Math.sqrt(7), seq[j]);
+                // Use gotoPos to correct position, increase accuracy.
+                await this.gotoPos(x,y);
             }
             this.currentLogoDirection -= rotateDegreePerLevel;
         }
