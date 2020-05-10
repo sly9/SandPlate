@@ -556,25 +556,19 @@ class SandPlate {
         await this.lineTo(x1, y1);
     }
 
-    async fakeArc(radius, degrees = 120, rightHanded = true) {
-        for (let i = 0; i < 4; i++) {
-            this.currentLogoDirection += rightHanded ? 30 : -30;
-            await this.forward(radius / 2);
-        }
-    }
     async weird(level) {
         // How many levels to occupy the whole plate.
-        let r0 = 151 / Math.sqrt(7);
+        let r0 = 151;
         let r = r0;
         for (let i = 0; i < level; i++) {
             r = r / Math.sqrt(7);
         }
-        let x0 = r, y0 = 0;
+        let x0 = r0, y0 = 0;
 
         await this.gotoPos(x0, y0);
         this.currentLogoDirection = 90;
         for (let i = 0; i < 3; i++) {
-            await this.weird_(level, r0, false);
+            await this.weird_(level, r0, true);
         }
     }
 
