@@ -117,6 +117,14 @@ class SandPlate {
         return y2;
     }
 
+    get currentLogoDirection() {
+        return this.LOGODirectionInDegrees_;
+    }
+
+    set currentLogoDirection(directionInDegrees) {
+        this.LOGODirectionInDegrees_ = (directionInDegrees % 360 + 360) % 360;
+    }
+
     /**
      * Static helper methods.
      */
@@ -437,6 +445,7 @@ class SandPlate {
      * @return {Promise<void>}
      */
     async lineTo(x, y) {
+        //TODO: Update this.LOGODirection as well.
         const lineToMaxStepLength = 3;
 
         let x0 = x, y0 = y;
@@ -471,6 +480,7 @@ class SandPlate {
      * @return {Promise<void>}
      */
     async arcTo(x, y, radius, rightHandSide = true, drawMinorArc = true) {
+        // TODO: Update logo direction as well.
         const arcToMaxStepLength = 3;
 
         console.log(`Arc to {${x}, ${y}}`);
@@ -530,6 +540,55 @@ class SandPlate {
     /**
      * Fancy methods based on basic methods above.
      */
+
+    async forward(steps = 0, direction = -9999999) {
+        if (direction == -9999999) {
+            // magic number, use current direction.
+            direction = this.currentLogoDirection;
+        } else {
+            this.currentLogoDirection = direction;
+        }
+        let x0 = this.currentX;
+        let y0 = this.currentY;
+        let x1 = this.currentX + Math.cos(direction / 180 * Math.PI) * steps;
+        let y1 = this.currentY + Math.sin(direction / 180 * Math.PI) * steps;
+        console.log(`Forward from  {${x0},${y0}} to {${x1},${y1}}`);
+        await this.lineTo(x1, y1);
+    }
+
+    async fakeArc(radius, degrees = 120, rightHanded = true) {
+        for (let i = 0; i < 4; i++) {
+            this.currentLogoDirection += rightHanded?30:-30;
+            await this.forward(radius / 2);
+        }
+    }
+
+    async weird() {
+        await  this.gotoPos(200,0);
+        for (let i =0;i<3;i++){
+            let seq = [true,true,false,true,true,false,false];
+            for (let j = 0;j<7;j++){
+                await this.fakeArc(60,120, seq[j]);
+
+            }
+        }
+    }
+
+    // Not working
+    async arc(radius, degrees, rightHanded = true, minorArc = true, direction = -9999999) {
+        if (direction == -9999999) {
+            // magic number, use current direction.
+            direction = this.currentLogoDirection;
+        } else {
+            this.currentLogoDirection = direction;
+        }
+        let x0 = this.currentX;
+        let y0 = this.currentY;
+
+        let x1 = this.currentX + Math.cos((direction - 90 + degrees) / 180 * Math.PI) * radius;
+        let y1 = this.currentY + Math.sin((direction - 90 + degrees) / 180 * Math.PI) * radius;
+        await this.arcTo(x1, y1, rightHanded, minorArc);
+    }
 
 
     /**
