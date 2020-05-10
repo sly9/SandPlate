@@ -615,11 +615,8 @@ class SandPlate {
         let x0 = rightHanded ? x1 + s * radius : x1 - s * radius;
         let y0 = rightHanded ? y1 - c * radius : y1 + c * radius;
 
-        c = Math.cos(degrees * Math.PI / 180);
-        s = rightHanded ? -Math.sin(degrees * Math.PI / 180) : Math.sin(degrees * Math.PI / 180);
-
-        let x2 = x0 + (x1 - x0) * c - (y1 - y0) * s;
-        let y2 = y0 + (x1 - x0) * s + (y1 - y0) * c;
+        let x2 = rightHanded ? x0 + radius * Math.cos((direction + 90 - degrees) * Math.PI / 180) : x0 + radius * Math.cos((direction - 90 + degrees) * Math.PI / 180);
+        let y2 = rightHanded ? y0 + radius * Math.sin((direction + 90 - degrees) * Math.PI / 180) : y0 + radius * Math.sin((direction - 90 + degrees) * Math.PI / 180);
 
         if (degrees <= 180 && rightHanded) {
             await this.arcTo(x2, y2, radius, false, true);
@@ -631,7 +628,7 @@ class SandPlate {
             await this.arcTo(x2, y2, radius, true, false);
         }
 
-        this.currentLogoDirection += degrees;
+        this.currentLogoDirection += rightHanded ? -degrees : degrees;
     }
 
 
