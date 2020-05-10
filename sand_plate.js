@@ -181,6 +181,33 @@ class SandPlate {
         return 3 * steps;
     }
 
+    static convertToArcToArguments(x, y, direction, radius, degrees, rightHanded) {
+        rightHanded = !rightHanded;
+        if (degrees <= 0 || degrees >= 360) {
+            console.warn(`Degrees must be between 0 and 360 (exclusive).`);
+            return;
+        }
+
+        let c = Math.cos(direction * Math.PI / 180);
+        let s = Math.sin(direction * Math.PI / 180);
+
+        // center of the arc
+        let x0 = rightHanded ? x + s * radius : x - s * radius;
+        let y0 = rightHanded ? y - c * radius : y + c * radius;
+
+        let x2 = rightHanded ? x0 + radius * Math.cos((direction + 90 - degrees) * Math.PI / 180) : x0 + radius * Math.cos((direction - 90 + degrees) * Math.PI / 180);
+        let y2 = rightHanded ? y0 + radius * Math.sin((direction + 90 - degrees) * Math.PI / 180) : y0 + radius * Math.sin((direction - 90 + degrees) * Math.PI / 180);
+
+        if (degrees <= 180 && rightHanded) {
+            return [x2, y2, radius + SandPlate.EPS, false, true];
+        } else if (degrees > 180 && rightHanded) {
+            return [x2, y2, radius + SandPlate.EPS, false, false];
+        } else if (degrees <= 180 && !rightHanded) {
+            return [x2, y2, radius + SandPlate.EPS, true, true];
+        } else {
+            return [x2, y2, radius + SandPlate.EPS, true, false];
+        }
+    }
 
     /**
      * Basic methods.
@@ -591,8 +618,6 @@ class SandPlate {
 
 
     async arc(radius, degrees, rightHanded = true, direction = -9999999) {
-        //
-        rightHanded = !rightHanded;
         if (degrees <= 0 || degrees >= 360) {
             console.warn(`Degrees must be between 0 and 360 (exclusive).`);
             return;
@@ -605,30 +630,9 @@ class SandPlate {
             this.currentLogoDirection = direction;
         }
 
-        let x1 = this.currentX;
-        let y1 = this.currentY;
-
-        let c = Math.cos(direction * Math.PI / 180);
-        let s = Math.sin(direction * Math.PI / 180);
-
-        // center of the arc
-        let x0 = rightHanded ? x1 + s * radius : x1 - s * radius;
-        let y0 = rightHanded ? y1 - c * radius : y1 + c * radius;
-
-        let x2 = rightHanded ? x0 + radius * Math.cos((direction + 90 - degrees) * Math.PI / 180) : x0 + radius * Math.cos((direction - 90 + degrees) * Math.PI / 180);
-        let y2 = rightHanded ? y0 + radius * Math.sin((direction + 90 - degrees) * Math.PI / 180) : y0 + radius * Math.sin((direction - 90 + degrees) * Math.PI / 180);
-
-        if (degrees <= 180 && rightHanded) {
-            await this.arcTo(x2, y2, radius + SandPlate.EPS, false, true);
-        } else if (degrees > 180 && rightHanded) {
-            await this.arcTo(x2, y2, radius + SandPlate.EPS, false, false);
-        } else if (degrees <= 180 && !rightHanded) {
-            await this.arcTo(x2, y2, radius + SandPlate.EPS, true, true);
-        } else {
-            await this.arcTo(x2, y2, radius + SandPlate.EPS, true, false);
-        }
-
-        this.currentLogoDirection += rightHanded ? -degrees : degrees;
+        let [x1,y1, radius1,rightHanded1, minorArc] = SandPlate.convertToArcToArguments(this.currentX, this.currentY, this.currentLogoDirection, radius, degrees, rightHanded);
+        await this.arcTo(x1, y1, radius1, rightHanded1, minorArc);
+        this.currentLogoDirection += rightHanded1 ? degrees : -degrees;
     }
 
 
