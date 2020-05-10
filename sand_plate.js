@@ -620,13 +620,13 @@ class SandPlate {
         let y2 = rightHanded ? y0 + radius * Math.sin((direction + 90 - degrees) * Math.PI / 180) : y0 + radius * Math.sin((direction - 90 + degrees) * Math.PI / 180);
 
         if (degrees <= 180 && rightHanded) {
-            await this.arcTo(x2, y2, radius, false, true);
+            await this.arcTo(x2, y2, radius + SandPlate.EPS, false, true);
         } else if (degrees > 180 && rightHanded) {
-            await this.arcTo(x2, y2, radius, false, false);
+            await this.arcTo(x2, y2, radius + SandPlate.EPS, false, false);
         } else if (degrees <= 180 && !rightHanded) {
-            await this.arcTo(x2, y2, radius, true, true);
+            await this.arcTo(x2, y2, radius + SandPlate.EPS, true, true);
         } else {
-            await this.arcTo(x2, y2, radius, true, false);
+            await this.arcTo(x2, y2, radius + SandPlate.EPS, true, false);
         }
 
         this.currentLogoDirection += rightHanded ? -degrees : degrees;
