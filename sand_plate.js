@@ -592,19 +592,47 @@ class SandPlate {
 
 
     // Not working
-    async arc(radius, degrees, rightHanded = true, minorArc = true, direction = -9999999) {
+    async arc(radius, degrees, rightHanded = true, direction = -9999999) {
+        if (degrees <= 0 || degrees >= 360) {
+            console.warn(`Degrees must be between 0 and 360 (exclusive).`);
+            return;
+        }
+
         if (direction == -9999999) {
             // magic number, use current direction.
             direction = this.currentLogoDirection;
         } else {
             this.currentLogoDirection = direction;
         }
-        let x0 = this.currentX;
-        let y0 = this.currentY;
 
-        let x1 = this.currentX + Math.cos((direction - 90 + degrees) / 180 * Math.PI) * radius;
-        let y1 = this.currentY + Math.sin((direction - 90 + degrees) / 180 * Math.PI) * radius;
-        await this.arcTo(x1, y1, rightHanded, minorArc);
+        let x1 = this.currentX;
+        let y1 = this.currentY;
+
+        let c = Math.cos(direction * Math.PI / 180);
+        let s = Math.sin(direction * Math.PI / 180);
+
+        // center of the arc
+        let x0 = rightHanded ? x1 + s * radius : x1 - s * radius;
+        let y0 = rightHanded ? y1 - c * radius : y1 + c * radius;
+
+        let x2, y2;
+        c = Math.cos(degrees * Math.PI / 180);
+        s = rightHanded ? -Math.sin(degrees * Math.PI / 180) : Math.sin(degrees * Math.PI / 180);
+
+        let x2 = x0 + (x1 - x0) * c - (y1 - y0) * s;
+        let y2 = y0 + (x1 - x0) * s + (y1 - y0) * c;
+
+        if (degrees <= 180 && rightHanded) {
+            await this.arcTo(x2, y2, radius, false, true);
+        } else if (degrees > 180 && rightHanded) {
+            await this.arcTo(x2, y2, radius, false, false);
+        } else if (degrees <= 180 && !rightHanded) {
+            await this.arcTo(x2, y2, radius, true, true);
+        } else {
+            await this.arcTo(x2, y2, radius, true, false);
+        }
+
+        return;
     }
 
 
@@ -618,7 +646,7 @@ class SandPlate {
         console.log(`Draw Hilbert curve of depth ${depth}.`);
 
         if (depth <= 0) {
-            console.warn(`Negative depth is not accepted!`);
+            console.warn(`Depth must be a positive integer.`);
             return;
         }
 
