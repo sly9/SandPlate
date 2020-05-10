@@ -601,7 +601,7 @@ class SandPlate {
         console.log(`Draw Hilbert curve of depth ${depth}.`);
 
         if (depth <= 0) {
-            console.warn(`Negative depth is not accepted!`);
+            console.warn(`Depth must be a positive integer.`);
             return;
         }
 
