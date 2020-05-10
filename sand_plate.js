@@ -563,7 +563,7 @@ class SandPlate {
         }
     }
     async weird(level) {
-        let r = 10;
+        let r = 10 * Math.sqrt(7);
         for (let i = 0; i < level; i++) {
             r = r * Math.sqrt(7);
         }
@@ -583,9 +583,10 @@ class SandPlate {
         } else {
             const rotateDegreePerLevel = -120 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180;
             this.currentLogoDirection +=  rotateDegreePerLevel;
-            let seq = [true, true, false, true, true, false, false];
+            //let seq = [true, true, false, true, true, false, false];
+            let seq = rightHanded ? [true, true, false, true, true, false, false] : [true, true, false, false, true, false, false];
             for (let j = 0; j < 7; j++) {
-                await this.weird_(remainingLevel - 1, radius / Math.sqrt(7), rightHanded ? seq[j] : !seq[j]);
+                await this.weird_(remainingLevel - 1, radius / Math.sqrt(7), seq[j]);
             }
             this.currentLogoDirection -= rotateDegreePerLevel;
         }
