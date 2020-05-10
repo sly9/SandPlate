@@ -563,23 +563,25 @@ class SandPlate {
         }
     }
     async weird(level) {
-        let r = 10 * Math.sqrt(7);
+        // How many levels to occupy the whole plate.
+        let r0 = 151 / Math.sqrt(7);
+        let r = r0;
         for (let i = 0; i < level; i++) {
-            r = r * Math.sqrt(7);
+            r = r / Math.sqrt(7);
         }
         let x0 = r, y0 = 0;
 
         await this.gotoPos(x0, y0);
         this.currentLogoDirection = 90;
         for (let i = 0; i < 3; i++) {
-            await this.weird_(level, r, true, true);
+            await this.weird_(level, r0, false);
         }
     }
 
     async weird_(remainingLevel, radius, rightHanded) {
         if (remainingLevel == 0) {
             //this.currentLogoDirection += (rightHanded ? 120 : -120);
-            await this.fakeArc(radius, 120, rightHanded);
+            await this.arc(radius, 120, rightHanded);
         } else {
             const rotateDegreePerLevel = -120 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180;
             this.currentLogoDirection +=  rotateDegreePerLevel;
@@ -593,8 +595,10 @@ class SandPlate {
     }
 
 
-    // Not working
+
     async arc(radius, degrees, rightHanded = true, direction = -9999999) {
+        //
+        rightHanded = !rightHanded;
         if (degrees <= 0 || degrees >= 360) {
             console.warn(`Degrees must be between 0 and 360 (exclusive).`);
             return;
