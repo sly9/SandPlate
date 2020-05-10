@@ -579,7 +579,7 @@ class SandPlate {
     async weird_(remainingLevel, radius, rightHanded) {
         if (remainingLevel == 0) {
             //this.currentLogoDirection += (rightHanded ? 120 : -120);
-            await this.fakeArc(radius, 120, rightHanded);
+            await this.arc(radius, 120, rightHanded);
         } else {
             this.currentLogoDirection -= 180 - (90 - Math.asin(1 / 2 / Math.sqrt(7)) / Math.PI * 180 - 30);
             let seq = [true, true, false, true, true, false, false];
@@ -615,7 +615,6 @@ class SandPlate {
         let x0 = rightHanded ? x1 + s * radius : x1 - s * radius;
         let y0 = rightHanded ? y1 - c * radius : y1 + c * radius;
 
-        let x2, y2;
         c = Math.cos(degrees * Math.PI / 180);
         s = rightHanded ? -Math.sin(degrees * Math.PI / 180) : Math.sin(degrees * Math.PI / 180);
 
@@ -632,7 +631,7 @@ class SandPlate {
             await this.arcTo(x2, y2, radius, true, false);
         }
 
-        return;
+        this.currentLogoDirection += degrees;
     }
 
 
