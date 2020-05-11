@@ -1,6 +1,13 @@
 import {InstructionType, Plan} from './Plan.js'
 import {SandPlate} from "./sand_plate.js";
 
+const HilbertFacing = Object.freeze({
+    UP: Symbol.for('up'),
+    DOWN: Symbol.for('down'),
+    LEFT: Symbol.for('left'),
+    RIGHT: Symbol.for('right'),
+});
+
 class Driver {
     constructor(plate) {
         /**
@@ -68,7 +75,7 @@ class Driver {
         console.log(`Executing instruction [${Symbol.keyFor(instruction.type)}] with Args:[${resolvedArguments}], context: [${JSON.stringify(context)}]`);
         switch (instruction.type) {
             case InstructionType.LET:
-                window[resolvedArguments[0]]=resolvedArguments[1];
+                window[resolvedArguments[0]] = resolvedArguments[1];
                 break;
             case InstructionType.SLEEP:
                 await this.sleep_(resolvedArguments[0])
@@ -128,6 +135,56 @@ class Driver {
         }
         return resolvedArguments;
     }
+
+    async hilbert(level) {
+        const MAX_LENGTH = this.plate_.radius * Math.sqrt(2);
+        await this.hilbert_(level, 0, 0, MAX_LENGTH, HilbertFacing.UP);
+    }
+
+    /**
+     *
+     * @param level
+     * @param centerX
+     * @param centerY
+     * @param size
+     * @param facing Which way is this curve facing. |_| is down, for example.
+     * @return {Promise<void>}
+     * @private
+     */
+    async hilbert_(level, centerX, centerY, size, facing = HilbertFacing.UP) {
+        if (level == 0) {
+            let [rotatedX, rotatedY] = SandPlate.rotatedPosition(centerX, centerY, -135);
+            await this.plate_.lineTo(rotatedX, rotatedY);
+            return;
+        }
+
+        // up => a
+        // right => d
+        // left => b
+        // down => c
+
+        let facingSequence = {
+            'up': [HilbertFacing.RIGHT, HilbertFacing.UP, HilbertFacing.UP, HilbertFacing.LEFT],
+            'down': [HilbertFacing.LEFT, HilbertFacing.DOWN, HilbertFacing.DOWN, HilbertFacing.RIGHT],
+            'left': [HilbertFacing.DOWN, HilbertFacing.LEFT, HilbertFacing.LEFT, HilbertFacing.UP],
+            'right': [HilbertFacing.UP, HilbertFacing.RIGHT, HilbertFacing.RIGHT, HilbertFacing.DOWN],
+        }
+
+        let deltas = {
+            'up': [[-1, 1], [-1, -1], [1, -1], [1, 1]],
+            'right': [[-1, 1], [1, 1], [1, -1], [-1, -1]],
+            'left': [[1, -1], [-1, -1], [-1, 1], [1, 1]],
+            'down': [[1, -1], [1, 1], [-1, 1], [-1, -1]]
+
+        }
+
+        for (let i = 0; i < 4; i++) {
+            let [dx, dy] = deltas[Symbol.keyFor(facing)][i];
+            await this.hilbert_(level - 1, centerX + dx * size / 4, centerY + dy * size / 4, size / 2, facingSequence[Symbol.keyFor(facing)][i]);
+        }
+
+    }
+
 
 }
 
