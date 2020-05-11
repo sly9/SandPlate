@@ -102,7 +102,7 @@ class Driver {
                 await this.plate_.rotateBothArms().apply(this.plate_, resolvedArguments);
                 break;
             case InstructionType.HILBERT:
-                await this.plate_.hilbertCurve.apply(this.plate_, resolvedArguments);
+                await this.hilbert.apply(this, resolvedArguments);
                 break;
             case InstructionType.LOOP: {
                 let loopCount = parseInt(resolvedArguments[0]);
@@ -141,27 +141,12 @@ class Driver {
         await this.hilbert_(level, 0, 0, MAX_LENGTH, HilbertFacing.UP);
     }
 
-    /**
-     *
-     * @param level
-     * @param centerX
-     * @param centerY
-     * @param size
-     * @param facing Which way is this curve facing. |_| is down, for example.
-     * @return {Promise<void>}
-     * @private
-     */
     async hilbert_(level, centerX, centerY, size, facing = HilbertFacing.UP) {
         if (level == 0) {
             let [rotatedX, rotatedY] = SandPlate.rotatedPosition(centerX, centerY, -135);
             await this.plate_.lineTo(rotatedX, rotatedY);
             return;
         }
-
-        // up => a
-        // right => d
-        // left => b
-        // down => c
 
         let facingSequence = {
             'up': [HilbertFacing.RIGHT, HilbertFacing.UP, HilbertFacing.UP, HilbertFacing.LEFT],
