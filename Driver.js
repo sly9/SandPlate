@@ -8,6 +8,13 @@ const HilbertFacing = Object.freeze({
     RIGHT: Symbol.for('right'),
 });
 
+const PEANO = Object.freeze({
+    TYPE_0: Symbol.for('type0'),
+    TYPE_1: Symbol.for('type1'),
+    FORWARD: Symbol.for('forward'),
+    BACKWARD: Symbol.for('backward'),
+})
+
 class Driver {
     constructor(plate) {
         /**
@@ -104,6 +111,9 @@ class Driver {
             case InstructionType.HILBERT:
                 await this.hilbert.apply(this, resolvedArguments);
                 break;
+            case InstructionType.PEANO:
+                await this.peano.apply(this, resolvedArguments);
+                break;
             case InstructionType.LOOP: {
                 let loopCount = parseInt(resolvedArguments[0]);
                 context['loopLevel'] = context['loopLevel'] + 1;
@@ -185,11 +195,11 @@ class Driver {
 
         for (let i = 1; i <= 16; ++i) {
             if (i % 2 == 1) {
-                await this.octagon_(x[(i-1) % 4], y[(i-1) % 4], x[i % 4], y[i % 4], level);
+                await this.octagon_(x[(i - 1) % 4], y[(i - 1) % 4], x[i % 4], y[i % 4], level);
             } else {
                 await this.plate_.lineTo(x[i % 4], y[i % 4]);
             }
-            [x[(i-1) % 4], y[(i-1) % 4]] = SandPlate.rotatedPosition(x[(i-1) % 4], y[(i-1) % 4], 90);
+            [x[(i - 1) % 4], y[(i - 1) % 4]] = SandPlate.rotatedPosition(x[(i - 1) % 4], y[(i - 1) % 4], 90);
         }
     }
 
@@ -220,6 +230,52 @@ class Driver {
         }
         await this.plate_.lineTo(x1 - drx, y1 - dry);
         await this.octagon_(x1 - drx, y1 - dry, x1, y1, level - 1);
+    }
+
+    async peano(level) {
+        const MAX_LENGTH = this.plate_.radius * Math.sqrt(2);
+        await this.peano_(level, PEANO.TYPE_0, 0, 0, MAX_LENGTH, PEANO.FORWARD);
+    }
+
+    /**
+     *
+     * @param level How many levels till we end with drawing a line to the center.
+     * @param type Two types: 0 for |¯|_|, 1 for |_|¯|.
+     * @param centerX center X of the whole shape.
+     * @param centerY center Y of the whole shape
+     * @param size width of the square this shape should take.
+     * @param direction Whether we should draw from start to end, or end to start.
+     * @return {Promise<void>}
+     */
+    async peano_(level, type, centerX, centerY, size, direction) {
+        if (level == 0) {
+            let [rotatedX, rotatedY] = SandPlate.rotatedPosition(centerX, centerY, 135);
+            await this.plate_.lineTo(rotatedX, rotatedY);
+            return;
+        }
+
+        // To draw a forward type, this is the
+        let forwardDirectionSequence = [PEANO.FORWARD, PEANO.BACKWARD, PEANO.FORWARD, PEANO.FORWARD, PEANO.BACKWARD, PEANO.FORWARD, PEANO.FORWARD, PEANO.BACKWARD, PEANO.FORWARD];
+        // backward sequence would be, reading from end to start, each direction is the opposite of forward sequence.
+        let backwardDirectionSequence = forwardDirectionSequence.map(i => (i == PEANO.FORWARD ? PEANO.BACKWARD : PEANO.FORWARD))
+            .reverse();
+
+        let type0PositionSequence = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [0, 0], [0, -1], [1, -1], [1, 0], [1, 1]];
+        let type1PositionSequence = type0PositionSequence.map(p => [p[0], -p[1]]);
+
+        let directionSequence = direction == PEANO.FORWARD ? forwardDirectionSequence : backwardDirectionSequence;
+        let positionSequence = type == PEANO.TYPE_0 ? type0PositionSequence : type1PositionSequence;
+        positionSequence = direction == PEANO.FORWARD ? positionSequence : positionSequence.reverse();
+        let subType = type;
+        for (let i = 0; i < 9; i++) {
+            let newCenterX = centerX + positionSequence[i][0] * size / 3;
+            let newCenterY = centerY + positionSequence[i][1] * size / 3;
+
+            await this.peano_(level - 1, subType, newCenterX, newCenterY, size / 3, directionSequence[i]);
+            subType = subType == PEANO.TYPE_0 ? PEANO.TYPE_1 : PEANO.TYPE_0;
+
+        }
+
     }
 
 }

@@ -32,6 +32,10 @@
         #instructionTextareaWrapper {
             margin: 20px 0;
         }
+
+        button {
+            margin-top: 10px;
+        }
     </style>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="module" src="main.js"></script>
@@ -85,6 +89,9 @@
     <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="drawHilbertCurve">
         <span class="mdc-button__label">Hilbert Curve</span>
     </button>
+    <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="drawPeanoCurve">
+        <span class="mdc-button__label">Peano Curve</span>
+    </button>
     <h3>Tools</h3>
     <button class="mdc-ripple-surface mdc-button--raised mdc-button" id="reset">
         <span class="mdc-button__label">Reset</span>
@@ -94,29 +101,7 @@
 <div>
     <label class="mdc-text-field mdc-text-field--textarea" id="instructionTextareaWrapper">
   <textarea class="mdc-text-field__input" aria-labelledby="my-label-id" rows="8"
-            cols="80" maxlength="100000">let,a,10
-sleep, 1000
-line,200,200
-park
-goto, 400, 0
-loopStart, 8
-rotateArm0, 10*i0
-loopStart, 5
-rotateArm1, 20*i1, i1%2 == 0 ? true:false
-sleep,5
-loopEnd
-loopEnd
-  goto,400,0
-
-let, sectionCount ,10
-let, stepSize, 20
-loopStart,10
-line,400-stepSize*2*i0,0
-line,400-stepSize*2*i0-stepSize,0
-line,400-stepSize*2*i0-stepSize,2*stepSize*(i0+1)
-line,400-stepSize*2*i0-stepSize*2,2*stepSize*(i0+1)
-loopEnd
-</textarea>
+            cols="80" maxlength="100000"></textarea>
         <span class="mdc-notched-outline">
     <span class="mdc-notched-outline__leading"></span>
     <span class="mdc-notched-outline__notch">
@@ -139,12 +124,7 @@ loopEnd
 <div>
     <div>Drawing tools</div>
     <div id="CurrentTools">
-        <!-- Render textfield component -->
-        <label class="mdc-text-field">
-            <input type="text" class="mdc-text-field__input" aria-labelledby="my-label">
-            <span class="mdc-floating-label" id="my-label">Label</span>
-            <div class="mdc-line-ripple"></div>
-        </label>
+
     </div>
 </div>
 <div></div>

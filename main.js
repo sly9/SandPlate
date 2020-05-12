@@ -22,6 +22,8 @@ let init = () => {
     document.getElementById('drawSunflower').addEventListener('click', drawSunflower);
     document.getElementById('drawTwistedFlower').addEventListener('click', drawTwistedFlower);
     document.getElementById('drawHilbertCurve').addEventListener('click', drawHilbertCurve);
+    document.getElementById('drawPeanoCurve').addEventListener('click', drawPeanoCurve);
+
     document.getElementById('runInstructions').addEventListener('click', runInstructions);
     document.getElementById('reset').addEventListener('click', reset);
 
@@ -296,8 +298,13 @@ let drawTwistedFlower = async () => {
     await runInstructions();
 };
 
-let drawHilbertCurve = async (dpeth) => {
+let drawHilbertCurve = async () => {
     instructionTextArea.value = await loadURL('plans/hilbertcurve');
+    await runInstructions();
+};
+
+let drawPeanoCurve = async () => {
+    instructionTextArea.value = await loadURL('plans/peano');
     await runInstructions();
 }
 

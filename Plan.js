@@ -12,6 +12,7 @@ const InstructionType = Object.freeze({
     SLEEP:Symbol.for('sleep'),
     LET:Symbol.for('let'),
     HILBERT: Symbol.for('hilbert'),
+    PEANO: Symbol.for('peano'),
 });
 
 class Instruction {

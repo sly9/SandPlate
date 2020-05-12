@@ -619,8 +619,6 @@ class SandPlate {
         }
     }
 
-
-
     async arc(radius, degrees, rightHanded = true, direction = -9999999) {
         if (degrees <= 0 || degrees >= 360) {
             console.warn(`Degrees must be between 0 and 360 (exclusive).`);
@@ -639,93 +637,6 @@ class SandPlate {
         this.currentLogoDirection += rightHanded1 ? degrees : -degrees;
     }
 
-
-    /**
-     * Draws a space-filling Hilbert curve
-     * @param depth Depth of the Hilbert curve
-     * @param rotation
-     * @return {Promise<void>}
-     */
-    async hilbertCurve(depth, rotation = 0) {
-        console.log(`Draw Hilbert curve of depth ${depth}.`);
-
-        if (depth <= 0) {
-            console.warn(`Depth must be a positive integer.`);
-            return;
-        }
-
-        let productionRules = [];
-        productionRules['A'] = ['D', 'A', 'A', 'B'];
-        productionRules['B'] = ['C', 'B', 'B', 'A'];
-        productionRules['C'] = ['B', 'C', 'C', 'D'];
-        productionRules['D'] = ['A', 'D', 'D', 'C'];
-
-        let dx = [];
-        dx['A'] = [-1, -1, 1, 1];
-        dx['B'] = [1, -1, -1, 1];
-        dx['C'] = [1, 1, -1, -1];
-        dx['D'] = [-1, 1, 1, -1];
-
-        let dy = [];
-        dy['A'] = [-1, 1, 1, -1];
-        dy['B'] = [1, 1, -1, -1];
-        dy['C'] = [1, -1, -1, 1];
-        dy['D'] = [-1, -1, 1, 1];
-
-        let pattern = [];
-        let x = [], y = [];
-
-        let r = this.radius * Math.sqrt(2) - 0.1;
-        let n = 1;
-
-        for (let i = 1; i <= depth; ++i) {
-            n *= 4;
-            r /= 2;
-
-            if (i == 1) {
-                pattern[0] = 'C';
-
-                x[0] = r / 2;
-                y[0] = r / 2;
-
-                x[1] = r / 2;
-                y[1] = -r / 2;
-
-                x[2] = -r / 2;
-                y[2] = -r / 2;
-
-                x[3] = -r / 2;
-                y[3] = r / 2;
-            } else {
-                // pattern is of length n/4
-                // pattern[i] ==> patter[4 * i  :4 * i + 3] for i in [0, n/16 - 1]
-                for (let i = n / 16 - 1; i >= 0; --i) {
-                    let pi = pattern[i];
-                    for (let j = 0; j < 4; ++j) {
-                        pattern[4 * i + j] = productionRules[pi][j];
-                    }
-                }
-
-                // x, y are of length n
-                // x[i] ==> x[4 * i  :4 * i + 3] for i in [0, n/4 - 1]
-                for (let i = n / 4 - 1; i >= 0; --i) {
-                    let xi = x[i], yi = y[i];
-                    let pi = pattern[i];
-
-                    for (let j = 0; j < 4; ++j) {
-                        x[4 * i + j] = xi + r * dx[pi][j] / 2;
-                        y[4 * i + j] = yi + r * dy[pi][j] / 2;
-                    }
-                }
-            }
-        }
-
-        for (let i = 0; i < n; ++i) {
-            let [rotatedX, rotatedY] = SandPlate.rotatedPosition(x[i], y[i], rotation);
-            await this.lineTo(rotatedX, rotatedY);
-        }
-
-    }
 }
 
 export {SandPlate}
