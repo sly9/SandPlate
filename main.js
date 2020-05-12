@@ -18,6 +18,7 @@ let init = () => {
     document.getElementById('drawFun').addEventListener('click', drawFun);
     document.getElementById('drawFun2').addEventListener('click', drawFun2);
     document.getElementById('drawFun3').addEventListener('click', drawFun3);
+    document.getElementById('drawOctagon').addEventListener('click', drawOctagon);
     document.getElementById('drawSunflower').addEventListener('click', drawSunflower);
     document.getElementById('drawTwistedFlower').addEventListener('click', drawTwistedFlower);
     document.getElementById('drawHilbertCurve').addEventListener('click', drawHilbertCurve);
@@ -278,6 +279,11 @@ let drawFun2 = async () => {
 let drawFun3 = async () => {
     console.log('Fun3');
     await sandPlate.weird(2);
+}
+
+let drawOctagon = async () => {
+    console.log('Octagon');
+    await driver.octagon(4);
 }
 
 let drawSunflower = async () => {

@@ -170,8 +170,58 @@ class Driver {
 
     }
 
+    async octagon(level) {
+        console.log(`octagon of level ${level}`);
+
+        let n = Math.pow(2, level) - 1 + Math.pow(2, level) * Math.sqrt(2);
+        let r = this.plate_.radius * Math.sqrt(2);
+        let r0 = r / n - 0.1;
+
+        let u = (1 + Math.sqrt(2)) / 2;
+        let x = [u * r0, n / 2 * r0, (n / 2 - 1 / Math.sqrt(2)) * r0, 0.5 * r0];
+        let y = [0.5 * r0, (n / 2 - 1 / Math.sqrt(2)) * r0, n / 2 * r0, u * r0];
+
+        await this.plate_.gotoPos(x[0], y[0]);
+
+        for (let i = 1; i <= 16; ++i) {
+            if (i % 2 == 1) {
+                await this.octagon_(x[(i-1) % 4], y[(i-1) % 4], x[i % 4], y[i % 4], level);
+            } else {
+                await this.plate_.lineTo(x[i % 4], y[i % 4]);
+            }
+            [x[(i-1) % 4], y[(i-1) % 4]] = SandPlate.rotatedPosition(x[(i-1) % 4], y[(i-1) % 4], 90);
+        }
+    }
+
+    async octagon_(x0, y0, x1, y1, level) {
+        if (level == 1) {
+            await this.plate_.lineTo(x1, y1);
+            return;
+        }
+
+        let n = (Math.pow(2, level) - 1) / Math.sqrt(2) + Math.pow(2, level - 1) - 1;
+        let dx = (x1 - x0) / n;
+        let dy = (y1 - y0) / n;
+
+        let drx = ((x1 - x0) - (1 + 1 / Math.sqrt(2)) * dx) / 2;
+        let dry = ((y1 - y0) - (1 + 1 / Math.sqrt(2)) * dy) / 2;
+
+        await this.octagon_(x0, y0, x0 + drx, y0 + dry, level - 1);
+        if ((x1 - x0) * (y1 - y0) > 0) {
+            await this.plate_.lineTo(x0 + drx + dx, y0 + dry);
+            await this.octagon_(x0 + drx + dx, y0 + dry, x0 + 2 * drx + dx, y0, level - 1);
+            await this.plate_.lineTo(x1, y1 - 2 * dry - dy);
+            await this.octagon_(x1, y1 - 2 * dry - dy, x1 - drx, y1 - dry - dy, level - 1);
+        } else {
+            await this.plate_.lineTo(x0 + drx, y0 + dry + dy);
+            await this.octagon_(x0 + drx, y0 + dry + dy, x0, y0 + 2 * dry + dy, level - 1);
+            await this.plate_.lineTo(x1 - 2 * drx - dx, y1);
+            await this.octagon_(x1 - 2 * drx - dx, y1, x1 - drx - dx, y1 - dry, level - 1);
+        }
+        await this.plate_.lineTo(x1 - drx, y1 - dry);
+        await this.octagon_(x1 - drx, y1 - dry, x1, y1, level - 1);
+    }
 
 }
-
 
 export {Driver}
