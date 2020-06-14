@@ -1,4 +1,4 @@
-const usb = require('usb')
+import usb from 'usb'
 
 /**
  * Class representing a TIC834 board
@@ -87,7 +87,7 @@ class Tic {
     }
 
     execute32bitCommand(command, value) {
-        let b = new Buffer(new Uint8Array(4));
+        let b = Buffer.alloc(4);
         b.writeInt32LE(value);
         return new Promise((resolve, reject) => {
             this.device_.controlTransfer(0x40, command, b.readUInt16LE(), b.readUInt16LE(2), new Uint8Array(0), (error, data) => {
@@ -242,5 +242,7 @@ let init = async () => {
     let d1 = new Date();
     console.log(`${count} times, ${d1 - d0}, finally!`);
 };
-init();
+//init();
+
+export {Tic}
 
